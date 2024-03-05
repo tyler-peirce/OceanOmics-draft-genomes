@@ -40,7 +40,7 @@ To run these scripts please refer to scripts NCBI_find_contam.sh NCBI_filter. If
 The filtered fasta file will have an .fa extension and is to be used in the next decontamination process. 
 
 
-**3. Tiara decontamination **
+**3. Tiara decontamination**
 This tool searches the NCBI decontaminated genome for additional contamination particularity Mitochondrial. 
 There are 2 scripts for this process 
 
