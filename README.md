@@ -1,9 +1,12 @@
-![draft genome pipeline git drawio (1)](https://github.com/LaurenHuet/OceanOmics-draft-genomes/assets/88010555/43a36adb-8056-474a-817e-da0526a8facf)# OceanOmics Draft Genome Assembly Pipeline
-
+# OceanOmics Draft Genome Assembly Pipeline
 
 # Overview 
 
 This documentation describes a nextflow pipeline for quality control and de novo genome assembly of illumina genomes. 
+
+
+![draft genome pipeline git drawio (1)](https://github.com/LaurenHuet/OceanOmics-draft-genomes/assets/88010555/43a36adb-8056-474a-817e-da0526a8facf)
+
 
 # Requirements 
 The scripts included here are designed to run using singularity containers on a HPC cluster using the workload manager SLURM. 
