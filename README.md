@@ -9,7 +9,7 @@ The scripts included here are designed to run using singularity containers on a 
 # User guide 
 
 There are three main nextflow scripts to run the genome assembly pipeline, each step will generate a set of statistics that can be compiled in either .tsv format or .tdt format using the tsv.compile code. 
-This pipeline assumes you have paired end illumina reads, with lanes pooled together. 
+This pipeline assumes you have paired end illumina reads, with lanes pooled together. Please ensure you are familiar with the requirements of storing results in the ogl_ilmn_database, all results from OceanOmics Draft Genomes pipeline will need to be pushed to this git for storage in the sql database (https://github.com/Computational-Biology-OceanOmics/olg_ilmn_database/tree/main).
 
 # Reads Quality Control
 
