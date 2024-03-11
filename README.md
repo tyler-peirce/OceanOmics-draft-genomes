@@ -66,7 +66,6 @@ The following tools are to be incorporated into the QC workflow, please refer to
 
 **BUSCO 
 BWA 
-Samtools Stats
 Merqury
 DepthSizer**
 
@@ -85,7 +84,7 @@ Please refer to BWA.sh to run BWA independently or bwa-famring.sh to farm jobs o
 
 
 **Samtools stats**
-This step is to check the coverage of the assembly. Please refer to the samtools_stats.sh script to run independently or samtools-farming.sh to farm jobs out across a RUN of samples. 
+This step is to check the coverage of the assembly. Please refer to the samtools_stats.sh script to run independently or samtools-farming.sh to farm jobs out across a RUN of samples, these scripts are located within the BWA directory.
 
 
 **Merqury**
