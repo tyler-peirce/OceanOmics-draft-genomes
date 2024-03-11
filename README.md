@@ -37,6 +37,7 @@ There are 2 scripts for this process
 
 
 To run these scripts please refer to scripts NCBI_find_contam.sh NCBI_filter. If you are running this across a large amount of files please see the NCBI farming scripts, which contain loops to submit one slurm job per assembly file.
+the NCBI compile scripts will compile the results of the NCBI decontamination step, to be pushed into the sql database. 
 
 The filtered fasta file will have an .fa extension and is to be used in the next decontamination process. 
 
@@ -46,8 +47,8 @@ This tool searches the NCBI decontaminated genome for additional contamination p
 There are 2 scripts for this process 
 
 The first script screens the genome and outputs three fasta files with the mitochondrial, plastid and protist contigs which it deems to be contamination. 
-The second script compiles the contamination into a report, showing the type, number of contigs and how many base pairs. This report is then used with  BBMap to filter out the contaminate contigs. 
-These reports are to be pushed to github to be held in the database.
+The second script compiles the contamination into a report, showing the type, number of contigs and how many base pairs. This report is then used with BBMap to filter out the contaminate contigs. 
+These reports are to be compile with the tiara-compile.sh scripts and pushed to github to be held in the database.
 
 
 To run these scripts please refer to tiara_find_contam.sh filter_tiara.sh for slurm scripts and to the tiara farming scripts which contain loops to submit one slurm job per assembly file
@@ -55,6 +56,45 @@ To run these scripts please refer to tiara_find_contam.sh filter_tiara.sh for sl
 
 The final decontaminated fasta file will have a .fna extension, this is to be used for genome QC and downstream processes.
 
+# Genome Quality Metrics
+
+The following workflow will run through a series of tools to obtain quality metrics for the assembly quality of the genome. Upon completion of each tool, results are to be compiled and pushed to the olg_ilmn_database. The workflow can be ran as a series of scripts farmed out across a run, or from the Genome QC nextflow ( this nextflow is under development and may not have all the required tools at this time) 
+The following tools are to be incorporated into the QC workflow, please refer to the stand alone scripts within each of the following directories to farm these jobs out across each run. 
+
+**BUSCO 
+BWA 
+Samtools Stats
+Merqury
+DepthSizer**
+
+**BUSCO**
+To run BUSCO please ensure you know what species you are working with, as the database you use for BUSCO will depend on your species. If you are working on Actinoptergii, this database is stored locally on pawsey in the the  /software/projects/pawsey/singularity path. If you require a different database please refer to https://busco.ezlab.org/ to install this locally. 
+
+Please refer to the busco.sh script to run busco independently or the busco-farming.sh to farm jobs out across a RUN of samples. 
+
+Please refer to the compile busco results for a series of scripts that will convert JSON busco results into TSV files and compile those across runs to generate a table of results for the sql database. 
+
+
+**BWA**
+This step is to map the reads back to the assembly file generating a sorted bam file to be used for downstream processes. 
+
+Please refer to BWA.sh to run BWA independently or bwa-famring.sh to farm jobs out across across a RUN of samples. 
+
+
+**Samtools stats**
+This step is to check the coverage of the assembly. Please refer to the samtools_stats.sh script to run independently or samtools-farming.sh to farm jobs out across a RUN of samples. 
+
+
+**Merqury**
+This tool looks at the completeness and QV score of the assembly, please see Merqury.sh for scripts to run independently or merqury-farming.sh to farm jobs out across a RUN of samples. 
+
+Please refer to compile_merqury.sh to compile the completeness an QV scores for the SQL database. 
+
+
+**Depthsizer**
+This tool estimates the genome size of the assembly. Please see Depthsizer.sh run independently or depthsizer-famring.sh to farm jobs out across a RUN of samples.
+
+Please refer to compile_depthsizer.sh to compile the genome size prediction stats for each sample for the SQL database. 
 
 
 
