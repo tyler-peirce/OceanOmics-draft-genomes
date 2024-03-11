@@ -1,3 +1,6 @@
+# OceanOmics Draft Genome Assembly Pipeline
+
+
 # Overview 
 
 This documentation describes a nextflow pipeline for quality control and de novo genome assembly of illumina genomes. 
