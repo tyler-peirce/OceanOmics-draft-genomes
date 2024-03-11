@@ -2,7 +2,7 @@
 #R1 &R2 fastq files. 
 #sorted BAM bam from BWA
 #the final decontaminated assembly file 
-#the BUSCO fully table tsv file 
+#the BUSCO full table tsv file 
 #To ensure all the results remained contained in the correct directory, you will need to submit the script from within the directory (as shown in the loop below) 
 RUNDIR=
 
