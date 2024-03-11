@@ -5,7 +5,8 @@
 This documentation describes a nextflow pipeline for quality control and de novo genome assembly of illumina genomes. 
 
 
-![draft genome pipeline git drawio (1)](https://github.com/LaurenHuet/OceanOmics-draft-genomes/assets/88010555/43a36adb-8056-474a-817e-da0526a8facf)
+
+![draft genome pipeline git3 drawio](https://github.com/LaurenHuet/OceanOmics-draft-genomes/assets/88010555/2371ce95-e351-4abd-80f5-85f759a131ea)
 
 
 # Requirements 
