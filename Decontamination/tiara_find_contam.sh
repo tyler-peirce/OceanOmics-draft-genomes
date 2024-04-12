@@ -16,8 +16,8 @@ date=$(date +%y%m%d)
 
 sample=$1
 rundir=$2
-assembly=$4
-fasta="$rundir/$sample/assemblies/genome/$assembly.v129mh.fa"
+assembly=$3
+fasta=$4
 out_dir="$rundir/$sample/assemblies/genome/tiara"
 
 
