@@ -25,8 +25,10 @@ Directory struture
 ```
 Project-dir/  
 └── OG303  
-    └── fastp  
+    └── fastp
+            *fastq.gz
          └── fastqc
+                *fastqc-stats*
 ``` 
 
 
