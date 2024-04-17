@@ -114,7 +114,7 @@ The following workflow will run through a series of tools to obtain quality metr
 
 This workflow can be run from the Genome QC nextflow , or as a series of scripts farmed out across a run.
 
-GenomeQC Nextflow
+**GenomeQC Nextflow**
 
 It is important that you have followed the directory structure of the previous nextflows to continue on with this workflow. The genomeQC directory contains the nextflow pipeline, which takes the decontaminated genome, meryl database and fastq files as input. the genomeQC.nf script runs programs BUSCO, BWA/Samtools, Merqury and Depthsizer. The nextflow.config outlines the singulairty containers used in each step as well as the slurm script settings. The bin directory contains an R script to compile results from BUSCO.  This nextflow can be run from within the genomeQC directory. To run the nextflow module update the project directory path. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report.
 
@@ -137,7 +137,7 @@ project-dir/
 At the end of the piepline you should have a directory structure like this, with results from BWA, depthsizer and busco in directories within the genome directory, and the results of Merqury will be within the kmers directory. To compile these results and push them to the SQL database, please refer to the instructions below for locations of the compilation scripts. 
 
 
-Alternatively, the workflow can be ran as a series of scripts farmed out across a run (project-directory)
+**Alternatively**, the workflow can be ran as a series of scripts farmed out across a run (project-directory)
 The following tools are to be incorporated into the QC workflow, please refer to the stand alone scripts within each of the following directories to farm these jobs out across each run. 
 
 **BUSCO 
