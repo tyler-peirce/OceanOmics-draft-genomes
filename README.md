@@ -19,9 +19,9 @@ This pipeline assumes you have paired end illumina reads, with lanes pooled toge
 
 # Reads Quality Control
 
-The fastqc directory contains the first part of the nextflow pipeline, which takes raw reads with lanes pooled together and runs programs fastqc fastp and multiqc, and includes an R script to compile results from the fastp json file. The nextflow.config file outlines the singulairy containers used in each step as well as slurm script settings. After you have cloned the repo onto your scratch you can run the nextflow from within the fasqc folder. To run the nextflow module update the file paths for the raw reads in the fastqc.nf script the output paths to the directory stucture outlined below. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report.Within this directory you will find a fastp-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
+The fastqc directory contains the first part of the nextflow pipeline, which takes raw reads with lanes pooled together and runs programs fastqc fastp and multiqc, and includes an R script to compile results from the fastp json file. The nextflow.config file outlines the singularity containers used in each step as well as slurm script settings. After you have cloned the repo onto your scratch you can run the nextflow from within the fasqc folder. To run the nextflow module update the file paths for the raw reads in the fastqc.nf script the output paths to the directory structure outlined below. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report. Within this directory you will find a fastp-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
 
-Directory struture
+Directory structure
 ```
 Project-dir/  
 └── OG303  
@@ -30,11 +30,11 @@ Project-dir/
          └── fastqc
                 *fastqc-stats*
 ``` 
-At the end of the fastqc nextflow you should have a directory struture like this, with the filtered and trimmed fastq files in the fastp directory, and the results of fastqc in the fastqc directory. 
+At the end of the fastqc nextflow you should have a directory structure like this, with the filtered and trimmed fastq files in the fastp directory, and the results of fastqc in the fastqc directory. 
 
 # Genome Assembly
 
-The assembly directory contains the second part of the nextflow pipeline, which takes the filtered and trimmed reads output from the previous nextflow. The assembly.nf script runs programs meryl, GenomeScope and MEGAHIT. The nextflow.config outlines the singulairty containers used in each step as well as the slurm script settings. This nextflow can be run from within the assembly directory. To run the nextflow module update the file paths for the filtered and trimmed reads in the assembly.nf script and the output paths to the dreictory structure below. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report. Within this directory you will find a genomescope-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
+The assembly directory contains the second part of the nextflow pipeline, which takes the filtered and trimmed reads output from the previous nextflow. The assembly.nf script runs programs meryl, GenomeScope and MEGAHIT. The nextflow.config outlines the singularity containers used in each step as well as the slurm script settings. This nextflow can be run from within the assembly directory. To run the nextflow module update the file paths for the filtered and trimmed reads in the assembly.nf script and the output paths to the directory structure below. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report. Within this directory you will find a genomescope-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
 
 Directory Structure
 
@@ -51,7 +51,7 @@ project-dir/
             *meryldb
 ```
 
-At the end of the assembly nextflow pipline you should have a direcotry structure like this, with a assembly *.fasta file in the genome folder. Genomscope output in a directory in the kmers directory, and a meryl database in the kmers directory. 
+At the end of the assembly nextflow pipeline you should have a directory structure like this, with a assembly *.fasta file in the genome folder. GenomScope output in a directory in the kmers directory, and a meryl database in the kmers directory. 
 
 # Decontamination 
 
@@ -72,7 +72,7 @@ There are 2 scripts for this process
 To run these scripts please refer to scripts NCBI_find_contam.sh NCBI_filter. If you are running this across a large amount of files please see the NCBI farming scripts, which contain loops to submit one slurm job per assembly file.
 the NCBI compile scripts will compile the results of the NCBI decontamination step, to be pushed into the sql database. 
 
-The filtered fasta file will have an .fa extension and is to be used in the next decontamination process. 
+The filtered fasta file will have an *.fa extension and is to be used in the next decontamination process. 
 
 
 **3. Tiara decontamination**
@@ -89,9 +89,55 @@ To run these scripts please refer to tiara_find_contam.sh filter_tiara.sh for sl
 
 The final decontaminated fasta file will have a .fna extension, this is to be used for genome QC and downstream processes.
 
+Directory Structure 
+```
+project-dir/
+└── OG303
+    ├── assemblies
+    │   └── genome
+    │       ├── *.fa
+    │       ├── *.fasta
+    │       ├── *.fna
+    │       ├── NCBI
+    │       └── tiara
+    ├── fastp
+    │   └── fastqc
+    └── kmers
+
+```
+
+At the end of the decontamination script you should the output of the NCBI decontamination and the output if the tiara decontamination in their directories, and the intermediate fasta files in the genomes directory, where the *.fasta was the inital assembly, the *.fa is the assembly after NCBI decontamination, and the *.fna is the final decontaminated fasta after both NCBI and tiara decontamination.
+
 # Genome Quality Metrics
 
-The following workflow will run through a series of tools to obtain quality metrics for the assembly quality of the genome. Upon completion of each tool, results are to be compiled and pushed to the olg_ilmn_database. The workflow can be ran as a series of scripts farmed out across a run, or from the Genome QC nextflow ( this nextflow is under development and may not have all the required tools at this time) 
+The following workflow will run through a series of tools to obtain quality metrics for the assembly quality of the genome. Upon completion, results are to be compiled and pushed to the olg_ilmn_database. 
+
+This workflow can be run from the Genome QC nextflow , or as a series of scripts farmed out across a run.
+
+GenomeQC Nextflow
+
+It is important that you have followed the directory structure of the previous nextflows to continue on with this workflow. The genomeQC directory contains the nextflow pipeline, which takes the decontaminated genome, meryl database and fastq files as input. the genomeQC.nf script runs programs BUSCO, BWA/Samtools, Merqury and Depthsizer. The nextflow.config outlines the singulairty containers used in each step as well as the slurm script settings. The bin directory contains an R script to compile results from BUSCO.  This nextflow can be run from within the genomeQC directory. To run the nextflow module update the project directory path. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report.
+
+```
+project-dir/
+└── OG303
+    ├── assemblies
+    │   └── genome
+    │       ├── NCBI
+    │       ├── busco_acti
+    │       ├── bwa
+    │       ├── depthsizer
+    │       └── tiara
+    ├── fastp
+    │   └── fastqc
+    └── kmers
+
+```
+
+At the end of the piepline you should have a directory structure like this, with results from BWA, depthsizer and busco in directories within the genome directory, and the results of Merqury will be within the kmers directory. To compile these results and push them to the SQL database, please refer to the instructions below for locations of the compilation scripts. 
+
+
+Alternatively, the workflow can be ran as a series of scripts farmed out across a run (project-directory)
 The following tools are to be incorporated into the QC workflow, please refer to the stand alone scripts within each of the following directories to farm these jobs out across each run. 
 
 **BUSCO 
@@ -110,7 +156,7 @@ Please refer to the compile busco results for a series of scripts that will conv
 **BWA**
 This step is to map the reads back to the assembly file generating a sorted bam file to be used for downstream processes. 
 
-Please refer to BWA.sh to run BWA independently or bwa-famring.sh to farm jobs out across across a RUN of samples. 
+Please refer to BWA.sh to run BWA independently or bwa-famring.sh to farm jobs out across a RUN of samples. 
 
 
 **Samtools stats**
@@ -127,6 +173,3 @@ Please refer to compile_merqury.sh to compile the completeness an QV scores for 
 This tool estimates the genome size of the assembly. Please see Depthsizer.sh run independently or depthsizer-famring.sh to farm jobs out across a RUN of samples.
 
 Please refer to compile_depthsizer.sh to compile the genome size prediction stats for each sample for the SQL database. 
-
-
-
