@@ -20,7 +20,8 @@ GX_NUM_CORES=48
  
 sample=$1
 rundir=$2
-fasta=$3
+assembly=$3
+fasta=$4
 out_dir="$rundir/$sample/assemblies/genome/NCBI"
  
  
