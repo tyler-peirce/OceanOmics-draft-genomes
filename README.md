@@ -30,11 +30,28 @@ Project-dir/
          └── fastqc
                 *fastqc-stats*
 ``` 
-
+At the end of the fastqc nextflow you should have a directory struture like this, with the filtered and trimmed fastq files in the fastp directory, and the results of fastqc in the fastqc directory. 
 
 # Genome Assembly
 
-The assembly directory contains the second part of the nextflow pipeline, which takes the filtered and trimmed reads output from the previous nextflow. The assembly.nf script runs programs meryl, GenomeScope and MEGAHIT. The nextflow.config outlines the singulairty containers used in each step as well as the slurm script settings. This nextflow can be run from within the assembly directory. To run the nextflow module update the file paths for the filtered and trimmed reads in the assembly.nf script and the output paths to the desired location. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report. Within this directory you will find a genomescope-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
+The assembly directory contains the second part of the nextflow pipeline, which takes the filtered and trimmed reads output from the previous nextflow. The assembly.nf script runs programs meryl, GenomeScope and MEGAHIT. The nextflow.config outlines the singulairty containers used in each step as well as the slurm script settings. This nextflow can be run from within the assembly directory. To run the nextflow module update the file paths for the filtered and trimmed reads in the assembly.nf script and the output paths to the dreictory structure below. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report. Within this directory you will find a genomescope-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
+
+Directory Structure
+
+```
+project-dir/
+└── OG303
+    ├── assemblies
+    │   └── genome
+                *fasta
+    ├── fastp
+    │   └── fastqc
+    └── kmers
+            *genomescope-results-dir*
+            *meryldb
+```
+
+At the end of the assembly nextflow pipline you should have a direcotry structure like this, with a assembly *.fasta file in the genome folder. Genomscope output in a directory in the kmers directory, and a meryl database in the kmers directory. 
 
 # Decontamination 
 
