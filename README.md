@@ -25,7 +25,7 @@ Directory struture
 Project-dir/  <br />
 └── OG303  <br />
     └── fastp  <br />
-        └── fastqc  <br />
+         └── fastqc  <br />
 
 
 # Genome Assembly
