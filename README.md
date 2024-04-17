@@ -22,10 +22,10 @@ This pipeline assumes you have paired end illumina reads, with lanes pooled toge
 The fastqc directory contains the first part of the nextflow pipeline, which takes raw reads with lanes pooled together and runs programs fastqc fastp and multiqc, and includes an R script to compile results from the fastp json file. The nextflow.config file outlines the singulairy containers used in each step as well as slurm script settings. After you have cloned the repo onto your scratch you can run the nextflow from within the fasqc folder. To run the nextflow module update the file paths for the raw reads in the fastqc.nf script the output paths to the directory stucture outlined below. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report.Within this directory you will find a fastp-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
 
 Directory struture
-Project-dir/  
-└── OG303  
-    └── fastp  
-        └── fastqc  
+Project-dir/  <br />
+└── OG303  <br />
+    └── fastp  <br />
+        └── fastqc  <br />
 
 
 # Genome Assembly
