@@ -280,7 +280,7 @@ fastq_ch = Channel.fromFilePairs(params.fastq, checkIfExists: true)
         .map { it -> [it[4], it] }      //update the matching key per your file path and direcotry structure
        // .view()
 
-  combine_ch = meryldb_ch.join(assembly_ch, by: 2)
+  combine_ch = meryldb_ch.join(assembly_ch)
  //       .view()
 
    merqury(combine_ch)
