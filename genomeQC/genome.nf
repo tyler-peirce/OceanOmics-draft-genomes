@@ -167,7 +167,7 @@ process merqury {
 
 
     input:
-    tuple val(assembly_id), path(meryldb), val(sample_id), path(assembly)
+    tuple val(assembly_id), path(meryldb), path(assembly)
 
     output:
     path "*.completeness.stats"
