@@ -5,7 +5,7 @@ nextflow.enable.dsl = 2
  * pipeline input parameters
  */
 
-params.projectDir =""  // should be the path do the  $RUNDIR
+params.projectDir ="/scratch/pawsey0812/lhuet/Sarah"  // should be the name of the $RUNDIR
 
 // Define the pattern to match sample directories
 samplePattern = params.projectDir + "/*"
@@ -21,6 +21,7 @@ params.fastq="$params.projectDir/*/fastp/*.{R1,R2}.fastq.gz"
 params.meryldb ="$params.projectDir/*/kmers/*.meryl"
 params.scriptPath = "${baseDir}/bin/busco2tsv.R"
 params.lineage = "actinopterygii_odb10"
+params.lineage_db = "/scratch/references/busco_db/actinopterygii_odb10"
 
  
 
@@ -33,6 +34,7 @@ process busco_acti {
 
     input:
     tuple val(assembly_id), path(assembly)
+    path (lineage_db)
 
     output:
         path "${assembly}.busco.Acti.short_summary.txt", emit: summary_txt
@@ -45,7 +47,7 @@ process busco_acti {
 
     script:
     """
-    busco -i ${assembly} -o ${assembly}.busco.Acti -l actinopterygii_odb10 -m genome -c 8 -f
+    busco -i ${assembly} -o ${assembly}.busco.Acti -l ${lineage_db} -m genome -c 8 -f
     mv ${assembly}.busco.Acti/run_actinopterygii_odb10/short_summary.txt ${assembly}.busco.Acti.short_summary.txt
     mv ${assembly}.busco.Acti/run_actinopterygii_odb10/short_summary.json ${assembly}.busco.Acti.short_summary.json
     mv ${assembly}.busco.Acti/run_actinopterygii_odb10/full_table.tsv ${assembly}.busco.Acti.full_table.tsv
@@ -227,9 +229,14 @@ workflow {
     busco_acti_assemblies_ch = Channel.fromPath(params.assembly)
     .map { it -> [it[4], it] }
     .ifEmpty { error "No assembly file found at: ${params.assembly}" }
-   //.view()
+  // .view()
+   
+   
+   lineage_db = Channel.fromPath(params.lineage_db, checkIfExists: true)
+             //  .view()
     
-    busco_acti_ch = busco_acti(busco_acti_assemblies_ch)  //if you are calling the bucos_db as part of the container use this
+
+   busco_acti_ch = busco_acti(busco_acti_assemblies_ch, lineage_db.first())  
 
     compile_busco_acti(busco_acti_ch[1])
 
@@ -238,13 +245,13 @@ workflow {
 //##### BUSCO workflow vertebrate_odb10 ###### 
 
 
-    //busco_vert_assemblies_ch = Channel
-    //    .fromPath(params.assembly)
+   // busco_vert_assemblies_ch = Channel
+     //   .fromPath(params.assembly)
         //.view()
     
-    //busco_vert_ch = busco_vert(busco_vert_assemblies_ch)
+   // busco_vert_ch = busco_vert(busco_vert_assemblies_ch)
 
-    //compile_busco_vert(busco_vert_ch[1])
+   // compile_busco_vert(busco_vert_ch[1])
 //#####################################################################################
 
 
@@ -253,14 +260,14 @@ workflow {
            .map { it -> [it[4], it] }  //update the matching key per your file path and direcotry structure
              //  .view ()
 
-fastq_ch = Channel.fromFilePairs(params.fastq, checkIfExists: true)
+ fastq_ch = Channel.fromFilePairs(params.fastq, checkIfExists: true)
    .map { pair ->
       def key = pair[0].tokenize('.').get(0) // Extract the part of the filename before the first full stop
        [key, pair[1]] // Create a new pair with the modified key and the original value
    }
    // .view()
    //  Join the channels based on the matching keys
-    join_ch = fastq_ch.join(ref_ch, by: 2)
+       join_ch = fastq_ch.join(ref_ch, by: 2)
     //          .view()
 
 
@@ -272,16 +279,16 @@ fastq_ch = Channel.fromFilePairs(params.fastq, checkIfExists: true)
 // #### merqury workflow ####
 
    assembly_ch = Channel.fromPath(params.assembly, checkIfExists: true)
-        .map { it -> [it[4], it] }
-    //.view()    
+    .map { it -> [it[4], it] } 
+  //  .view()
 
 
     meryldb_ch = Channel.fromPath(params.meryldb, type: 'dir', checkIfExists: true)
-        .map { it -> [it[4], it] }      //update the matching key per your file path and direcotry structure
-       // .view()
+        .map { it -> [it[4], it] }
+    //.view()
 
-  combine_ch = meryldb_ch.join(assembly_ch)
- //       .view()
+ combine_ch = meryldb_ch.join(assembly_ch).view()
+
 
    merqury(combine_ch)
    // .view()
@@ -291,14 +298,14 @@ fastq_ch = Channel.fromFilePairs(params.fastq, checkIfExists: true)
 
 // Define channels for inputs for assembly
      depth_assembly_ch = Channel.fromPath(params.assembly, checkIfExists: true)
-          .map { it -> [it[4], it] }  //update the matching key per your file path and direcotry structure
+         .map { it -> [it[4], it] }  //update the matching key per your file path and direcotry structure
         //  .view ()
 
     // channel for reads 
  depth_fastq_ch = Channel.fromFilePairs(params.fastq, checkIfExists: true)
     .map { pair ->
-        def key = pair[0].tokenize('.').get(0) // Extract the part of the filename before the first full stop
-       [key, pair[1]] // Create a new pair with the modified key and the original value
+       def key = pair[0].tokenize('.').get(0) // Extract the part of the filename before the first full stop
+      [key, pair[1]] // Create a new pair with the modified key and the original value
     }
     //.view()
 
@@ -307,12 +314,12 @@ fastq_ch = Channel.fromFilePairs(params.fastq, checkIfExists: true)
     //.view()
 
 // call sorted bam file
-    bwa_align.out.sorted_bam
+   bwa_align.out.sorted_bam
     //.view()
 
 
     // depthsizer process
-  depthsizer(depth_assembly_ch,depth_fastq_ch, busco_acti.out.busco_acti_tsv, bwa_align.out.sorted_bam)
+ depthsizer(depth_assembly_ch,depth_fastq_ch, busco_acti.out.busco_acti_tsv, bwa_align.out.sorted_bam)
 
 
 }
