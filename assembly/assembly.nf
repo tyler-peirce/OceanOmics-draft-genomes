@@ -5,17 +5,18 @@ nextflow.enable.dsl = 2
  * pipeline input parameters
  */
 
-params.reads = 
+params.projectDir =""   /// the run directory ($RUN)
+params.reads="$params.projectDir/*/fastp/*.{R1,R2}.fastq.gz"
 
 process meryl {
-    publishDir "/scratch/pawseyACCOUNT/username/run-name/${sample_id}/kmers", mode:'copy'
+    publishDir "$params.projectDir/${og_num}/kmers", mode:'copy'
 
     input:
-    tuple val(sample_id), path(reads)
+    tuple val(og_num), val(sample_id), path(reads)
 
     output: 
-    tuple val(sample_id), path ("${sample_id}.meryl.hist"), emit: hist
-    tuple val(sample_id), path("${sample_id}.meryl")
+    tuple val(og_num), val(sample_id), path ("${sample_id}.meryl.hist"), emit: hist
+    tuple val(og_num), val(sample_id), path("${sample_id}.meryl")
 
     script:
     
@@ -32,10 +33,10 @@ process meryl {
 process genomescope { 
     tag "genomescope on $sample_id"
 
-   publishDir "/scratch/pawseyACCOUNT/username/run-name/${sample_id}/kmers", mode:'copy'
+   publishDir "$params.projectDir/${og_num}/kmers", mode:'copy'
 
    input:
-   tuple val(sample_id), path ("${sample_id}.meryl.hist")
+   tuple val(og_num), val(sample_id), path ("${sample_id}.meryl.hist")
     
 
     output:
@@ -51,10 +52,10 @@ process genomescope {
 
 process megahit {
 
-    publishDir "/scratch/pawseyACCOUNT/username/run-name/${sample_id}/assemblies/genome", mode:'copy'
+    publishDir "$params.projectDir/${og_num}/assemblies/genome", mode:'copy'
 
     input:
-    tuple val(sample_id), path(reads)
+    tuple val(og_num), val(sample_id), path(reads)
 
     output:
     tuple val(sample_id), path("${sample_id}.v129mh.fasta")
@@ -72,14 +73,18 @@ workflow {
 
     read_pairs_kmer_ch = Channel
         .fromFilePairs(params.reads, checkIfExists: true)
+        .map { 
+            def sample = it[0].tokenize('.').get(0)
+            return tuple(sample, it[0], it[1]) 
+        }
+        .view()
+
+  
 
     meryl_ch = meryl(read_pairs_kmer_ch)
     
     genomescope(meryl.out.hist)
 
-   read_pairs_megahit_ch = Channel
-        .fromFilePairs(params.reads, checkIfExists: true)
-    
-    megahit_ch = megahit(read_pairs_megahit_ch) 
+  megahit_ch = megahit(read_pairs_kmer_ch) 
 
 }
