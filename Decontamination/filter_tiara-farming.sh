@@ -5,7 +5,7 @@ for i in $rundir/*; do
 if [ -d "$i" ]; then
 sample=$(basename "$i")
 assembly=$(basename "$i.ilmn.$DATE")
- fasta=$rundir/$sample/assemblies/genome/$assembly.v129mh.fa
+ fasta=$rundir/$sample/assemblies/genome/$assembly.rmadapt.fasta
 sbatch $scripts/filter_tiara.sh "$sample" "$rundir" "$assembly" "$fasta"
  
 fi
