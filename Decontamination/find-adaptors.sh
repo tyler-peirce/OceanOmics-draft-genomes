@@ -3,7 +3,7 @@
 #SBATCH --time=00:40:00
 #SBATCH --cpus-per-task=6
 #SBATCH --partition=work
-#SBATCH --mem=10G
+#SBATCH --mem=25G
 #SBATCH --account=pawsey0812
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --mail-user=lauren.huet@uwa.edu.au
