@@ -55,7 +55,7 @@ At the end of the assembly nextflow pipeline you should have a directory structu
 
 # Decontamination 
 
-Following genome assembly two separate genome decontamination tools are used to detect and remove any foreign contaminates from within the genome. Scripts for these can be found in the decontamination folder. 
+Following genome assembly three separate genome decontamination tools are used to detect and remove any foreign contaminates from within the genome. Scripts for these can be found in the decontamination folder. 
 
 **1. NCBI fcs (foreign contaminant screen).** 
 This tool screens the genome against NCBI databases and searches for contaminants in the genome based off the NCBI taxonomy number given in the script. The example script contains the NCBI taxon ID for Actinopterygii (Ray fin fishes). Please ensure you update this number in the script based off the genome you are working on. 
@@ -73,6 +73,12 @@ To run these scripts please refer to scripts NCBI_find_contam.sh NCBI_filter. If
 the NCBI compile scripts will compile the results of the NCBI decontamination step, to be pushed into the sql database. 
 
 The filtered fasta file will have an *.fa extension and is to be used in the next decontamination process. 
+
+**2. NCBI Adaptor contamination removal**
+This tool searches the *.fa decontaminated genome for any adaptor and vector contaminaion. There are 2 main scripts for this tool. 
+    1. find-adaptors.sh, which can be used with farm_find-adaptor-contam.sh. This script will search the genome for adaptor contamination and produce a 
+    adaptor-report.txt file to be used to clean the genome of adaptor contamination. The script check-adaptor-report-exists.sh can be run to check if this process     has been successful before moving onto the next step. 
+    2. filter-adaptors.sh, which can be used with farm_filter-adaptors.sh, will clean the adaptor contamination from the genome. Upon successful completion of         this step you will have a fasta file in the genomes dirctory called $assembly.rmadapt.fasta, which will be used in the next process. To ensure this has             compleated succesfuly the script check-rmadapt-exists.sh will search for the *.fasta file, check for contents and prints a .txt file with these results.
 
 
 **3. Tiara decontamination**
@@ -98,7 +104,9 @@ project-dir/
     │       ├── *.fa
     │       ├── *.fasta
     │       ├── *.fna
+    |       ├── *.rmadapt.fasta
     │       ├── NCBI
+    |       |   └── adaptor
     │       └── tiara
     ├── fastp
     │   └── fastqc
