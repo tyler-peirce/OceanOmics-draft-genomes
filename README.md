@@ -116,6 +116,8 @@ project-dir/
 
 At the end of the decontamination script you should the output of the NCBI decontamination and the output if the tiara decontamination in their directories, and the intermediate fasta files in the genomes directory, where the *.fasta was the inital assembly, the *.fa is the assembly after NCBI decontamination, and the *.fna is the final decontaminated fasta after both NCBI and tiara decontamination.
 
+At the end of this step, run the final_aws_backup.sh script to back up the final genome assembly file and filtered and trimmed reads to AWS.
+
 # Genome Quality Metrics
 
 The following workflow will run through a series of tools to obtain quality metrics for the assembly quality of the genome. Upon completion, results are to be compiled and pushed to the olg_ilmn_database. 
