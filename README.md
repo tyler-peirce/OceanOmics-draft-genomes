@@ -148,6 +148,8 @@ project-dir/
 
 At the end of the piepline you should have a directory structure like this, with results from BWA, depthsizer and busco in directories within the genome directory, and the results of Merqury will be within the kmers directory. To compile these results and push them to the SQL database, please refer to the instructions below for locations of the compilation scripts. 
 
+Run the final-genome-backup.sh script in the genomeQC directory to back up these results to acacia, only run this after you have compiled the stats.
+
 
 **Alternatively**, the workflow can be ran as a series of scripts farmed out across a run (project-directory)
 The following tools are to be incorporated into the QC workflow, please refer to the stand alone scripts within each of the following directories to farm these jobs out across each run. 
