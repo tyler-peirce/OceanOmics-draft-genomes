@@ -31,6 +31,7 @@ Project-dir/
                 *fastqc-stats*
 ``` 
 At the end of the fastqc nextflow you should have a directory structure like this, with the filtered and trimmed fastq files in the fastp directory, and the results of fastqc in the fastqc directory. 
+Run the fastqc-backup.sh script to backup filtered and trimmed reads to acacia. 
 
 # Genome Assembly
 
