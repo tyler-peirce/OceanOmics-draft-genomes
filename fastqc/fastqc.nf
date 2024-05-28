@@ -4,15 +4,17 @@ nextflow.enable.dsl = 2
 /*
  * pipeline input parameters
  */
-params.reads = "/scratch/pawseyACCOUNT/$user/download/run/*.{R1,R2}.fq.gz"
-params.multiqc = "/scratch/pawseyACCOUNT/$user/run/multiqc"
+params.projectDir = "[path to run dir]"
+params.reads = "[path to raw reads]/*.{R1,R2}.fq.gz"
+params.multiqc = "$params.$projectDir/add RUN ID/multiqc"
+params.scriptPath = "${baseDir}/bin/fastp-json2tsv.R"
 
 
 process fastqc {
-    publishDir "/scratch/pawseyACCOUNT/$user/run/${sample_id}/fastp/fastqc" , mode:'copy'
+    publishDir "$params.projectDir/${og_num}/fastp/fastqc" , mode:'copy'
 
     input:
-    tuple val(sample_id), path(reads)
+    tuple val(og_num), val(sample_id), path(reads)
 
     output:
     path "fastqc_${sample_id}_logs"
@@ -26,16 +28,16 @@ process fastqc {
 
  process fastp {
 
-    publishDir "/scratch/pawseyACCOUNT/$user/run/${sample_id}/fastp", mode: 'copy'
+    publishDir "$params.projectDir/${og_num}/fastp", mode: 'symlink'
  
     input:
-    tuple val(sample_id), path(reads) 
+    tuple val(og_num), val(sample_id), path(reads) 
 
     output:
     tuple val(sample_id), 
     path("${sample_id}.R1.fastq.gz")
     path("${sample_id}.R2.fastq.gz")
-    path("${sample_id}.fastp.json") 
+    tuple val(og_num), path("${sample_id}.fastp.json"),  emit: fastp_json
     path("${sample_id}.fastp.html")
    
 
@@ -49,17 +51,17 @@ process fastqc {
 
 process compile {
 
-        publishDir "/scratch/pawseyACCOUNT/$user/run/${sample_id}/fastp", mode: 'copy'
+        publishDir "$params.projectDir/${og_num}/fastp", mode: 'copy'
 
         input: 
-        file sample_id
+        tuple val(og_num), file (sample_id)
 
         output:
         file ("${sample_id}.tsv") 
 
     """
      #!/usr/bin/env bash
-    Rscript /scratch/pawseyACCOUNT/$user/nextflow-wgs/V2/fastqc/bin/fastp-json2tsv.R "${sample_id}"
+    Rscript ${params.scriptPath} "${sample_id}"
 
     """
 
@@ -89,22 +91,20 @@ workflow {
 
     read_pairs_ch = Channel
         .fromFilePairs(params.reads, checkIfExists: true)
+        .map { 
+            def sample = it[0].tokenize('.').get(0)
+            return tuple(sample, it[0], it[1]) 
+        }
+        .view()
 
-    read_pairs_fastp_ch = Channel
-        .fromFilePairs(params.reads, checkIfExists: true)
-
-    fastqc_ch = fastqc(read_pairs_ch)
-    fastp_ch = fastp(read_pairs_fastp_ch)
+   fastqc_ch = fastqc(read_pairs_ch)
+    fastp_ch = fastp(read_pairs_ch)
     
-    compile(fastp_ch[1])
+   compile(fastp.out.fastp_json).view()
                 
  
    
-    multiqc(fastqc_ch.mix(fastp_ch[1]).collect())// the collect enables the data to be pushed through as a collection, so it will be 1 task, if there is no collect these will be run as separate tasks 
+   multiqc(fastqc_ch.mix(fastp_ch[1]).collect())// the collect enables the data to be pushed through as a collection, so it will be 1 task, if there is no collect these will be run as separate tasks 
 
 
-}
-
-workflow.onComplete {
-    log.info ( workflow.success ? "\nDone! Open the following report in your browser --> $params.multiqc/multiqc_report.html\n" : "Oops .. something went wrong" )
 }
