@@ -12,7 +12,7 @@
 #-----------------
 #Loading the required modules
 
-module load nextflow/23.04.3
+module load nextflow/23.10.0
 
 unset SBATCH_EXPORT
 
