@@ -1,6 +1,6 @@
 #!/bin/bash --login
 #SBATCH --account=pawsey0812
-#SBATCH --job-name=
+#SBATCH --job-name=genomeQC
 #SBATCH --partition=work
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
