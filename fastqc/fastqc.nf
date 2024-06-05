@@ -28,7 +28,7 @@ process fastqc {
 
  process fastp {
 
-    publishDir "$params.projectDir/${og_num}/fastp", mode: 'symlink'
+    publishDir "$params.projectDir/${og_num}/fastp", mode: 'copy'
  
     input:
     tuple val(og_num), val(sample_id), path(reads) 
