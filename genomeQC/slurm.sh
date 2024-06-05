@@ -1,5 +1,5 @@
 #!/bin/bash --login
-#SBATCH --account=
+#SBATCH --account=pawsey0812
 #SBATCH --job-name=
 #SBATCH --partition=work
 #SBATCH --cpus-per-task=1
