@@ -70,7 +70,7 @@ There are 2 scripts for this process
      **$sample_NCBI_contig_count_500bp.tsv** : this prints the number of contigs in sample that have less than 500bp 
 
 
-To run these scripts please refer to scripts NCBI_find_contam.sh NCBI_filter. If you are running this across a large amount of files please see the NCBI farming scripts, which contain loops to submit one slurm job per assembly file.
+To run these scripts please refer to scripts NCBI_find_contam.sh filter_NCBI.sh. If you are running this across a large amount of files please see the NCBI farming scripts, which contain loops to submit one slurm job per assembly file.
 the NCBI compile scripts will compile the results of the NCBI decontamination step, to be pushed into the sql database. 
 
 The filtered fasta file will have an *.fa extension and is to be used in the next decontamination process. 
