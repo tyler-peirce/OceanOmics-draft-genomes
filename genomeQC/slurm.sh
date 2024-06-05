@@ -1,6 +1,6 @@
 #!/bin/bash --login
-#SBATCH --account=
-#SBATCH --job-name=
+#SBATCH --account=pawsey0812
+#SBATCH --job-name=genomeQC
 #SBATCH --partition=work
 #SBATCH --cpus-per-task=1
 #SBATCH --ntasks-per-node=1
@@ -12,7 +12,7 @@
 #-----------------
 #Loading the required modules
 
-module load nextflow/23.04.3
+module load nextflow/23.10.0
 
 unset SBATCH_EXPORT
 
