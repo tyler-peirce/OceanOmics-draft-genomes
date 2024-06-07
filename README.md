@@ -168,8 +168,8 @@ These scripts will back up all data to acacia and to aws as well as generate CSV
 
 
 
-
-**Alternatively**, the workflow can be ran as a series of scripts farmed out across a run (project-directory)
+# Alternative Genome QC workflow
+The workflow can be ran as a series of scripts farmed out across a run (project-directory)
 The following tools are to be incorporated into the QC workflow, please refer to the stand alone scripts within each of the following directories to farm these jobs out across each run. 
 
 **BUSCO 
