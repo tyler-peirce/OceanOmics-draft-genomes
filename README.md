@@ -19,7 +19,18 @@ This pipeline assumes you have paired end illumina reads, with lanes pooled toge
 
 # Reads Quality Control
 
-The fastqc directory contains the first part of the nextflow pipeline, which takes raw reads with lanes pooled together and runs programs fastqc fastp and multiqc, and includes an R script to compile results from the fastp json file. The nextflow.config file outlines the singularity containers used in each step as well as slurm script settings. After you have cloned the repo onto your scratch you can run the nextflow from within the fasqc folder. To run the nextflow module update the file paths for the raw reads in the fastqc.nf script the output paths to the directory structure outlined below. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report. Within this directory you will find a fastp-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
+The fastqc directory contains the first part of the nextflow pipeline.
+
+This takes the raw reads with lanes pooled together then runs programs: fastqc, fastp, and multiqc.
+It also includes an R script to compile results from the fastp json file. 
+
+The nextflow.config file outlines the singularity containers used in each step including the slurm script settings. 
+
+After you have cloned the repo onto your scratch you can run the nextflow from within the fasqc folder. To run the nextflow module update the **file paths** for the raw reads in the **fastqc.nf** script, and the **output paths** formatted to mirror the directory structure outlined below. 
+
+Submit the slurm.sh script ensuring you have loaded the **singularity module and nextflow module** and have **updated name for the html report**. 
+
+Within this directory you will find a **fastp-compile.sh** script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
 
 Directory structure
 ```
@@ -30,12 +41,23 @@ Project-dir/
          └── fastqc
                 *fastqc-stats*
 ``` 
-At the end of the fastqc nextflow you should have a directory structure like this, with the filtered and trimmed fastq files in the fastp directory, and the results of fastqc in the fastqc directory. 
+At the end of the fastqc nextflow you should have a directory structure like the one above, with the filtered and trimmed fastq files in the fastp directory, and the results of fastqc in the fastqc directory. 
+
 Run the fastqc-backup.sh script to backup filtered and trimmed reads to acacia. 
 
 # Genome Assembly
 
-The assembly directory contains the second part of the nextflow pipeline, which takes the filtered and trimmed reads output from the previous nextflow. The assembly.nf script runs programs meryl, GenomeScope and MEGAHIT. The nextflow.config outlines the singularity containers used in each step as well as the slurm script settings. This nextflow can be run from within the assembly directory. To run the nextflow module update the file paths for the filtered and trimmed reads in the assembly.nf script and the output paths to the directory structure below. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report. Within this directory you will find a genomescope-compile.sh script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
+The assembly directory contains the second part of the nextflow pipeline, which uses the filtered and trimmed reads output from the previous nextflow. (the *fastq.gz files in the fastp directory)
+
+The assembly.nf script runs the programs: meryl, GenomeScope and MEGAHIT. 
+
+The nextflow.config outlines the singularity containers used in each step as well as the slurm script settings. This nextflow can be run from within the assembly directory. 
+
+To run the nextflow module update the file paths for the filtered and trimmed reads in the assembly.nf script and the output paths to the directory structure below. 
+
+Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and updated the name for the html report. 
+
+Run the genomescope-compile.sh script to gather the outputs across a run and compile them into a list which will be pushed into the sql database.
 
 Directory Structure
 
@@ -52,7 +74,8 @@ project-dir/
             *meryldb
 ```
 
-At the end of the assembly nextflow pipeline you should have a directory structure like this, with a assembly *.fasta file in the genome folder. GenomScope output in a directory in the kmers directory, and a meryl database in the kmers directory. 
+At the end of the assembly nextflow pipeline you should have a directory structure like the one above, with an assembly *.fasta file in the genome folder. GenomScope output in a directory within the kmers directory, and a meryl database in the kmers directory. 
+
 
 # Decontamination 
 
@@ -149,10 +172,27 @@ project-dir/
 
 At the end of the piepline you should have a directory structure like this, with results from BWA, depthsizer and busco in directories within the genome directory, and the results of Merqury will be within the kmers directory. To compile these results and push them to the SQL database, please refer to the instructions below for locations of the compilation scripts. 
 
-Run the final-genome-backup.sh script in the genomeQC directory to back up these results to acacia, only run this after you have compiled the stats.
 
 
-**Alternatively**, the workflow can be ran as a series of scripts farmed out across a run (project-directory)
+# Data Back up and Auditing
+There are three scripts in the genomeQC directory for data back up and auditing. In order run:
+
+1. aws_final_backup.sh
+2. Data_Audit.sh  (leave out the acaica part at this stage)
+3. final-genome-backup.sh
+4. Data_Audit.sh (run the acacia part at this stage) 
+
+These scripts will back up all data to acacia and to aws as well as generate CSV files that show the size of each directory before and after backup to ensure the backup has compleated properly. 
+
+
+
+
+
+
+
+
+# Alternative Genome QC workflow
+The workflow can be ran as a series of scripts farmed out across a run (project-directory)
 The following tools are to be incorporated into the QC workflow, please refer to the stand alone scripts within each of the following directories to farm these jobs out across each run. 
 
 **BUSCO 
