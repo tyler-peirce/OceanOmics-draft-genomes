@@ -151,7 +151,7 @@ At the end of the piepline you should have a directory structure like this, with
 
 
 
-**Data Back up and Auditing**
+# Data Back up and Auditing
 There are three scripts in the genomeQC directory for data back up and auditing. In order run:
 
 1. aws_final_backup.sh
@@ -160,6 +160,9 @@ There are three scripts in the genomeQC directory for data back up and auditing.
 4. Data_Audit.sh (run the acacia part at this stage) 
 
 These scripts will back up all data to acacia and to aws as well as generate CSV files that show the size of each directory before and after backup to ensure the backup has compleated properly. 
+
+
+
 
 
 
