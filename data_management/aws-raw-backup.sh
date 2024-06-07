@@ -10,4 +10,5 @@
 
 #-----------------
 
-aws s3 cp --recursive [path-to-raw-data] oceanomics/OceanGenomes/illumina-raw/[$RUNID]
+RUNID=
+rclone copy [path-to-raw-data] s3:oceanomics/OceanGenomes/illumina-raw/[$RUNID] --checksum
