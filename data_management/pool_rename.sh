@@ -8,11 +8,8 @@
 #SBATCH --partition=work
 #SBATCH --clusters=setonix
 #SBATCH --account=pawsey0812
-#SBATCH --mail-type=BEGIN,END
-#SBATCH --mail-user=lauren.huet@uwa.edu.au
 
 
-module load singularity/3.11.4-nompi
 
 
 
