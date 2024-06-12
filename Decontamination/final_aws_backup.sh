@@ -28,7 +28,7 @@ for i in "$RUNDIR"/OG*; do
         SAMPLE=$(basename "$i")
         fasta="$RUNDIR/$SAMPLE/assemblies/genome/*.fna"
         reads="$RUNDIR/$SAMPLE/fastp/*.fastq.gz"
-        mkdir -P [create a directory to move the files to for backup]
+        mkdir -p [create a directory to move the files to for backup]
         newdir= $path-to-direcotry-you-just-created/$SAMPLE/    [this will put the *.fna & reads into directorys with their OG numbers for storage)
 
         cp $fasta $newdir
