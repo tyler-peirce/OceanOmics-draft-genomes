@@ -1,4 +1,5 @@
-output_file="DATE_BUSCO_compiled_results.tsv"
+DATE=
+output_file="${DATE}_BUSCO_compiled_results.tsv"
 echo -e "sample\tComplete\tSingle_copy\tMulti_copy\tFragmented\tMissing\tn_markers\tdomain\tNumber_of_scaffolds\tNumber_of_contigs\tTotal_length\tPercent_gaps\tScaffold_N50\tContigs_N50" > $output_file
 
 
