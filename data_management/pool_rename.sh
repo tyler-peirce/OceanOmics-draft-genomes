@@ -1,20 +1,5 @@
 #!/bin/bash
 #SBATCH -J pool_rename
-#SBATCH --time=12:00:00
-#SBATCH --ntasks=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=64G
-#SBATCH --partition=work
-#SBATCH --clusters=setonix
-#SBATCH --account=pawsey0812
-
-
-
-
-
-#!/bin/bash
-#SBATCH -J pool_rename
 #SBATCH --time=24:00:00
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1
@@ -23,8 +8,8 @@
 #SBATCH --partition=work
 #SBATCH --clusters=setonix
 #SBATCH --account=pawsey0812
-
-
+#SBATCH --output=%x-%j.out  
+#SBATCH --error=%x-%j.err
 
 
 
