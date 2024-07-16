@@ -7,7 +7,7 @@ sample=$(basename "$i")
 assembly=$(basename "$i.ilmn.$DATE")
 rundir=
 fasta="$rundir/$sample/assemblies/genome/$assembly.v129mh.fasta"
-sbatch $scripts/filter_NCBI.sh "$sample" "$rundir" "$assembly"
+sbatch $scripts/filter_NCBI.sh "$sample" "$rundir" "$assembly" "$fasta"
  
 fi
 done 
