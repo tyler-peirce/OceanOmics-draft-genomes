@@ -33,7 +33,10 @@ wait
 
 # count the number of contigs and the number of base pairs being removed across EXCLUDE and TRIM 
 
-
+#first remove output file incase of multiple runs. 
+###
+rm $output_file
+####
 count=$(grep -w EXCLUDE "$action_report" | cut -f 1 | sort -u | wc -l)
 bp=$(grep -w EXCLUDE "$action_report" | awk '{sum+=$3-$2+1}END{print sum}')
 echo "EXCLUDE $count $bp" >> "$output_file"
