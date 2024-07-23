@@ -19,7 +19,7 @@ JSON <- args[1]
 # This will pull out the summary and before/after filtering stats. Before filtering stats are given the prefix "raw."
 myData <- fromJSON(file = JSON)
 SAMPLE <- strsplit(basename(JSON), split = ".", fixed = TRUE)[[1]][1]
-RUN <- strsplit(basename(JSON), split = ".", fixed = TRUE)[[1]][2]
+RUN <- strsplit(basename(JSON), split = ".", fixed = TRUE)[[1]][3]
 logWrite(paste("Input:", JSON, "->", SAMPLE, RUN))
 
 # Print the result.
