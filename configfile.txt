@@ -1,0 +1,35 @@
+#!/bin/bash
+. ~/.bashrc
+module load python/3.11.6
+
+# Update these variables for the run that you are processing
+
+RUN=NOVA_240716_AMD
+DATE=240716
+WRKDIR=/scratch/pawsey0812/tpeirce/DRAFTGENOME
+
+# Update the location of where you would like your output, or leave as is.
+rundir=$WRKDIR/OUTPUT
+
+# Update to the location of your Git clone, or make sure it is in your WRKDIR
+scripts=$WRKDIR/OceanOmics-draft-genomes${DATE}
+
+
+# Leave these variables as is as the scripts use these locations based on the above variables.
+
+results=$WRKDIR/${DATE}_results
+AWS=$WRKDIR/AWS_backup
+download=$WRKDIR/download/$RUN
+pooled=$WRKDIR/pooled/$RUN
+
+
+#Add this function to your bashrc
+## This function changes the date to the date of copy to ensure you have 21 days on scratch
+function rclone() {
+    if [ "$1" == "copy" ]; then
+        shift
+        command rclone copy --local-no-set-modtime "$@"
+    else
+        command rclone "$@"
+    fi
+}

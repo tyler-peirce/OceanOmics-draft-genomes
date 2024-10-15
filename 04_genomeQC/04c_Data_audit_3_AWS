@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Load in the configfile
+. ../configfile.txt
+
+###########
+# 3. Perform check on aws to compare with the local aws fasta check
+###########
+
+# Set the CSV file name  
+CSV=$results/draftcheck-AWS.$DATE.csv
+echo OGID,AwsNum,AwsSize,AwsBytes | tee -a $CSV
+
+# Read the OGLIST from the specified .txt file
+OGLIST_FILE=$results/OGLIST.txt
+
+# Loop through each OGID in the OGLIST file
+while IFS= read -r OGID; do
+  # Get the sizes from rclone from AWS
+  SIZES=$(echo $(rclone size s3:oceanomics/OceanGenomes/analysed-data/draft-genomes/$OGID | sed 's/Total/|-- AWS/g'))
+  
+  # Format and append the results to the CSV
+  echo $OGID $SIZES | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /,/g' | tee -a $CSV
+done < "$OGLIST_FILE"

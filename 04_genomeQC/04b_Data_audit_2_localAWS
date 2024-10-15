@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Load in the configfile
+. ../configfile.txt
+
+#######
+# FINAL LOCAL AWS BACKUP CHECK
+#######
+
+CSV=$results/draftcheck-fasta-aws-local.$DATE.csv
+# Print the CSV header
+echo OGID,LocNum,LocSize,LocBytes | tee -a $CSV
+
+# Read the OGLIST from the specified .txt file
+OGLIST_FILE=$results/OGLIST.txt
+
+
+# Loop through each OGID in the OGLIST file
+while IFS= read -r OGID; do
+  # Get the sizes from rclone for each location
+  SIZES=$(echo $(rclone size $AWS/$OGID | sed 's/Total/|-- Local/g'))
+  
+  # Format and append the results to the CSV
+  echo $OGID $SIZES | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /,/g' | tee -a $CSV
+done < "$OGLIST_FILE"
