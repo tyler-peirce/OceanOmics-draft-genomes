@@ -34,7 +34,7 @@ def evaluateExpression(value, config) {
 }
 
 // Load the config file
-def configFile = '../../configfile.txt'
+def configFile = '../configfile.txt'
 def config = readConfigFile(configFile)
 
 //_________________________________________________________________________________________________________
@@ -57,7 +57,7 @@ params.projectDir = config['rundir']
 
 
 // Define the pattern to match sample directories
-samplePattern = params.projectDir + "/OG33"
+samplePattern = params.projectDir + "/OG32"
 // Define the pattern to match assembly files
 assemblyPattern = samplePattern + "/assemblies/genome/*.fasta.gz"
 // Call the assemblies using the assembly pattern
@@ -106,12 +106,12 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
                 cp -v ${params.GXDB_LOC}/gxdb/all.taxa.tsv /tmp/gxdb/ 
             echo ‘done copying’ 
             ls -l /tmp/gxdb/
-
+           
             export taxid=\$(cat "${params.results}/taxon.txt" | grep -w ${og_num} | awk -F'\\t' '{print \$4}')
             echo "taxid: \$taxid"
             python3 /app/bin/run_gx \\
-                --fasta $assembly \\
-                --tax-id \$taxid \\
+                --fasta ${assembly} \\
+                --tax-id "\$taxid" \\
                 --out-dir ./NCBI \\
                 --gx-db /tmp/gxdb                
                 

@@ -271,18 +271,36 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
         publishDir "$params.projectDir/${assembly.simpleName}/kmers", mode: 'copy'
 
         input:
-        tuple val(ognum), path(meryldb), path(assembly)
+            tuple val(ognum), path(meryldb), path(assembly)
 
         output:
-        path "*.completeness.stats"
-        path "*.png"
-        path "*.qv"
+            path("*.completeness.stats")
+            path("*.png")
+            path("*.qv")
 
         script:
-        """
-        export MERQURY=/usr/local/share/merqury
-        \$MERQURY/merqury.sh ${meryldb} ${assembly} '${assembly.baseName}.merqury'
-        """
+            def VERSION = 1.3 // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+            """
+            # Nextflow changes the container --entrypoint to /bin/bash (container default entrypoint: /usr/local/env-execute)
+            # Check for container variable initialisation script and source it.
+            if [ -f "/usr/local/env-activate.sh" ]; then
+                set +u  # Otherwise, errors out because of various unbound variables
+                . "/usr/local/env-activate.sh"
+                set -u
+            fi
+            # limit meryl to use the assigned number of cores.
+            export OMP_NUM_THREADS=1536
+
+            merqury.sh \\
+                ${meryldb} \\
+                ${assembly} \\
+                ${assembly.baseName}.merqury
+
+            cat <<-END_VERSIONS > versions.yml
+            "${task.process}":
+                merqury: $VERSION
+            END_VERSIONS
+            """
     }
 
     //_________________________________________________________________________________________________________
@@ -348,18 +366,18 @@ workflow {
     //__________________________________________________________________________________
     
         // Lineage process to determine if vert or acti
-        lineage(join_ch)
+//        lineage(join_ch)
     
     //__________________________________________________________________________________
     // BUSCO workflow
     //__________________________________________________________________________________
     
         // activates the busco processes, these process have a when statement and will only run when the final_lineage_ch is equal to the right database to be run.
-        busco_acti(lineage.out)
-        compile_busco_acti(busco_acti.out.summary_json)
+//        busco_acti(lineage.out)
+//        compile_busco_acti(busco_acti.out.summary_json)
 
-        busco_vert(lineage.out)
-        compile_busco_vert(busco_vert.out.summary_json)
+//        busco_vert(lineage.out)
+//        compile_busco_vert(busco_vert.out.summary_json)
 
         
     //__________________________________________________________________________________
@@ -367,8 +385,8 @@ workflow {
     //__________________________________________________________________________________
 
         // Run process
-        bwa_align_acti(lineage.out)
-        bwa_align_vert(lineage.out)
+//        bwa_align_acti(lineage.out)
+//        bwa_align_vert(lineage.out)
 
     //__________________________________________________________________________________
     // Merqury workflow
@@ -394,22 +412,22 @@ workflow {
         //Depthsizer workflow  use the emit busco_table, sorted BAM file, assembly and reads files for input
         
         // Merge the outputs of busco_acti and busco_vert into a single channel
-        merged_busco_output_ch = busco_acti.out.busco_tsv.mix(busco_vert.out.busco_tsv)
+//        merged_busco_output_ch = busco_acti.out.busco_tsv.mix(busco_vert.out.busco_tsv)
         
         // Merge the outputs of bwa alighn vert and acti into a single channel
-        merged_bwa_aligm_output_ch = bwa_align_acti.out.sorted_bam.mix(bwa_align_vert.out.sorted_bam)
+//        merged_bwa_aligm_output_ch = bwa_align_acti.out.sorted_bam.mix(bwa_align_vert.out.sorted_bam)
 
         // Check channel outputs
-        merged_busco_output_ch.subscribe { item -> println "busco merged: $item"}
+//        merged_busco_output_ch.subscribe { item -> println "busco merged: $item"}
 
         // Join channels so that all the data is for the same sample
-        combined_ch = assemblies_ch
-            .join(fastq_ch, by: 0)                  // Join assemblies_ch with fastq_ch using the first value (ognum)
-            .join(merged_bwa_aligm_output_ch, by: 0)  // Join the resulting channel with bwa_align.out.sorted_bam using the first value (ognum)
-            .join(merged_busco_output_ch, by: 0)    // Join with the other two channels using the first value (ognum)
+//        combined_ch = assemblies_ch
+//            .join(fastq_ch, by: 0)                  // Join assemblies_ch with fastq_ch using the first value (ognum)
+//            .join(merged_bwa_aligm_output_ch, by: 0)  // Join the resulting channel with bwa_align.out.sorted_bam using the first value (ognum)
+//            .join(merged_busco_output_ch, by: 0)    // Join with the other two channels using the first value (ognum)
         //combined_ch.subscribe { item -> println "Depthsizer combined: $item"} // Uncomment this if you want to check the output of the channel
         
         // Run process
-        depthsizer(combined_ch)
+//        depthsizer(combined_ch)
     
 }

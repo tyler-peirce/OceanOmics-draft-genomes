@@ -83,7 +83,13 @@ for OGdir in $rundir/*; do
         "$OGdir/fastp/fastqc/fastqc_$OG.ilmn.*_logs"
         "$OGdir/fastp/fastqc"
         "$OGdir/fastp"
+        "$OGdir/kmers/$OG.ilmn.$DATE/$OG.ilmn.$DATE-genomescope_linear_plot.png"
+        "$OGdir/kmers/$OG.ilmn.$DATE/$OG.ilmn.$DATE-genomescope_log_plot.png"
+        "$OGdir/kmers/$OG.ilmn.$DATE/$OG.ilmn.$DATE-genomescope_model.txt"
+        "$OGdir/kmers/$OG.ilmn.$DATE/$OG.ilmn.$DATE-genomescope_progress.txt"
         "$OGdir/kmers/$OG.ilmn.$DATE/$OG.ilmn.$DATE-genomescope_summary.txt"
+        "$OGdir/kmers/$OG.ilmn.$DATE/$OG.ilmn.$DATE-genomescope_transformed_linear_plot.png"
+        "$OGdir/kmers/$OG.ilmn.$DATE/$OG.ilmn.$DATE-genomescope_transformed_log_plot.png"
         "$OGdir/kmers/$OG.ilmn.$DATE"
         "$OGdir/kmers/$OG.ilmn.$DATE.meryl/0x000000.merylData"
         "$OGdir/kmers/$OG.ilmn.$DATE.meryl/0x000000.merylIndex"
@@ -216,6 +222,7 @@ for OGdir in $rundir/*; do
         "$OGdir/kmers/$OG.ilmn.$DATE.meryl/merylIndex"
         "$OGdir/kmers/$OG.ilmn.$DATE.meryl"
         "$OGdir/kmers/$OG.ilmn.$DATE.meryl.tar.gz"
+        "$OGdir/kmers/$OG.ilmn.$DATE.meryl.hist"
         "$OGdir/kmers/$OG.ilmn.$DATE.v129mh.merqury.completeness.stats"
         "$OGdir/kmers/$OG.ilmn.$DATE.v129mh.merqury.$OG.ilmn.$DATE.v129mh.fna.qv"
         "$OGdir/kmers/$OG.ilmn.$DATE.v129mh.merqury.$OG.ilmn.$DATE.v129mh.fna.spectra-cn.fl.png"
@@ -229,7 +236,7 @@ for OGdir in $rundir/*; do
     )
 
     # Iterate over the list and check if each file or directory exists
-    echo -e "$OG\tFiles" > FileCheck/$OG.files.tsv
+    echo -e "$OG" > FileCheck/$OG.files.tsv
     for file in "${file_list[@]}"; do
         
         if [ -e "$file" ]; then
