@@ -1,7 +1,7 @@
 #!/bin/bash
 # Load in the configfile
 . ../configfile.txt
-
+mkdir FileCheck
 for OGdir in $rundir/*; do
 # Set OG and DATE variables (replace with actual values)
     OG=$(basename $OGdir)
@@ -59,7 +59,7 @@ for OGdir in $rundir/*; do
         "$OGdir/assemblies/genome/$OG.ilmn.$DATE.adaptor-contam.fasta"
         "$OGdir/assemblies/genome/$OG.ilmn.$DATE.rmadapt.fasta"
         "$OGdir/assemblies/genome/$OG.ilmn.$DATE.v129mh.fa"
-        "$OGdir/assemblies/genome/$OG.ilmn.$DATE.v129mh.fasta"
+        "$OGdir/assemblies/genome/$OG.ilmn.$DATE.v129mh.fasta.gz"
         "$OGdir/assemblies/genome/$OG.ilmn.$DATE.v129mh.fna"
         "$OGdir/assemblies/genome/tiara/log_$OG.ilmn.$DATE.tiara.txt"
         "$OGdir/assemblies/genome/tiara/mitochondrion_$OG.ilmn.$DATE.rmadapt.fasta"

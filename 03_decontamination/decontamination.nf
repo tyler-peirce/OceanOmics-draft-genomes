@@ -57,7 +57,7 @@ params.projectDir = config['rundir']
 
 
 // Define the pattern to match sample directories
-samplePattern = params.projectDir + "/OG32"
+samplePattern = params.projectDir + "/OG*"
 // Define the pattern to match assembly files
 assemblyPattern = samplePattern + "/assemblies/genome/*.fasta.gz"
 // Call the assemblies using the assembly pattern
@@ -111,7 +111,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             echo "taxid: \$taxid"
             python3 /app/bin/run_gx \\
                 --fasta ${assembly} \\
-                --tax-id "\$taxid" \\
+                --tax-id \$taxid \\
                 --out-dir ./NCBI \\
                 --gx-db /tmp/gxdb                
                 
@@ -414,20 +414,20 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
     process filter_tiara {
         tag "filter_tiara on $og_num"
 
-        publishDir "$params.results", mode:'copy'
+        publishDir "${params.projectDir}/${og_num}/assemblies/genome", mode:'copy'
 
         input:
             tuple val(og_num), val(sample_id), path(fasta), path(contig_list)
 
         output:
-            path("${sample_id}.v129.fna")
+            path("${sample_id}.v129mh.fna")
 
         script:
                 
             """
             filterbyname.sh \\
                 in="${fasta}" \\
-                out="${sample_id}.v129.fna" \\
+                out="${sample_id}.v129mh.fna" \\
                 names="${contig_list}" \\
                 exclude
             """
