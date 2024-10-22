@@ -323,7 +323,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
 
         script:
         """
-        python /opt/depthsizer_code/scripts/depthsizer.py -seqin ${assembly} -bam '${sorted_bam}' -busco '${busco_full_table}' -reads ${reads[0]} ${reads[1]} -basefile=${assembly}.depthsizer -forks 40 i=-1 v=0 > /dev/null 2>&1 || (exit 0)
+        python /opt/depthsizer_code/scripts/depthsizer.py -seqin ${assembly} -bam '${sorted_bam}' -busco '${busco_full_table}' -reads ${reads[0]},${reads[1]} -basefile=${assembly}.depthsizer -forks 40 i=-1 v=0 > /dev/null 2>&1 || (exit 0)
         if [ -e *.fastmp.scdepth ] && [ -e *.gensize.tdt ] && [ -e *.depthsizer.fulltable.tsv ] && [ -e *.depthsizer.busco.dupcnv.tsv ]; then
             rm -rf tmpdir
             exit 0  
