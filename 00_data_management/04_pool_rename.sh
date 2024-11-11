@@ -12,11 +12,11 @@
 . ../configfile.txt
 
 
-for SAMP in $(cat $scripts/data_management/$RUN.forcat.prefix.txt); do
+for SAMP in $(cat $scripts/00_data_management/$RUN.forcat.prefix.txt); do
     #Remove the trailing letter on the OG numbers
     SAMPLE=$(echo $SAMP | sed 's/.$//')
     
     echo "Running $SAMPLE" | tee -a $RUN.cat.log
-    $scripts/data_management/wgs-cat.sh $RUN $SAMPLE && echo
-    "$SAMPLE Complete" | tee -a $RUN.cat.log
+    $scripts/00_data_management/04a_wgs-cat.sh $RUN $SAMPLE && echo
+    echo "$SAMPLE Complete" | tee -a $RUN.cat.log
 done 

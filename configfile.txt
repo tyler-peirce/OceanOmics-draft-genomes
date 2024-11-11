@@ -9,10 +9,10 @@ DATE=240716
 WRKDIR=/scratch/pawsey0812/tpeirce/DRAFTGENOME
 
 # Update the location of where you would like your output, or leave as is.
-rundir=$WRKDIR/OUTPUT
+rundir=$WRKDIR/OUTPUT_OG2
 
 # Update to the location of your Git clone, or make sure it is in your WRKDIR
-scripts=$WRKDIR/OceanOmics-draft-genomes${DATE}
+scripts=$WRKDIR/OceanOmics-draft-genomesOG2
 
 
 # Leave these variables as is as the scripts use these locations based on the above variables.

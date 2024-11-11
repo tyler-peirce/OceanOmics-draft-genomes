@@ -14,12 +14,20 @@ The scripts included here are designed to run using singularity containers on a 
 
 # User guide 
 
-There are three main nextflow scripts to run the genome assembly pipeline, each step will generate a set of statistics that can be compiled in either .tsv format or .tdt format using the tsv.compile code. 
+There are four main nextflow scripts to run the genome assembly pipeline, each step will generate a set of statistics that can be compiled in either .tsv format or .tdt format using the tsv.compile code. 
 This pipeline assumes you have paired end illumina reads, with lanes pooled together. Please ensure you are familiar with the requirements of storing results in the ogl_ilmn_database, all results from OceanOmics Draft Genomes pipeline will need to be pushed to this git for storage in the sql database (https://github.com/Computational-Biology-OceanOmics/olg_ilmn_database/tree/main).
+
+For simplicity there is a configfile.txt in the main directory. This is the file that you will need to update with the run details. You should not have to edit any of the scripts as this file is read into the nextflow and bash scripts to reduce human error.
+
+Within each directory the files are numbered in the order that they need to be run. The nextflow scripts can either be submitted using the slurm script, or run in the workflow node in a TMUX session on Pawsey (or the system you are using to run this pipeline).
+
+# Data Management
+
+The 00_data_management directory contains the script for downloading the sequencing runs from basespace (01). There are also scripts for backing up to our file system, these will need to be adapted for your data management system. 02 and 03 are for backing up the raw data and undertaking an audit to make sure the files are the same once they have been coppied. 04 pools the multiple lanes together and reads in 04a as part of this process. 05 and 06 are for backing up the pooled data and doing an audit.
 
 # Reads Quality Control
 
-The fastqc directory contains the first part of the nextflow pipeline.
+The 01_fastqc directory contains the first part of the nextflow pipeline.
 
 This takes the raw reads with lanes pooled together then runs programs: fastqc, fastp, and multiqc.
 It also includes an R script to compile results from the fastp json file. 

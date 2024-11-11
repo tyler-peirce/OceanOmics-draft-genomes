@@ -18,4 +18,4 @@ module load nextflow/23.10.0
 
 unset SBATCH_EXPORT
 
-nextflow run assembly.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report $results/$RUN.assembly2.html
+nextflow run assembly.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report assembley.html

@@ -17,7 +17,7 @@ fi
 
 
 if [ "--help" = "$RUN" ] || [ -z "$RUN" ] || [ -z "$SAMPLE" ]; then
-  echo "Usage: wgs-cat.sh \$RUN \$SAMPLE"
+  echo "Usage: 04a_wgs-cat.sh \$RUN \$SAMPLE"
   exit 1
 fi
 
@@ -36,7 +36,7 @@ MEM=180   # Max memory (GB) for repair.sh
 
 
 # Setup run directory details
-POOLDIR=$WRKDIR/pooled/$RUN
+POOLDIR=$pooled
 QCDIR=$POOLDIR/qc 
 mkdir -p $QCDIR 
 echo $QCDIR

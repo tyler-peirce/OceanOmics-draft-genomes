@@ -14,4 +14,4 @@
 
 #rclone copy $download s3:oceanomics/OceanGenomes/illumina-raw/$RUN --checksum
 
-rclone copy $download s3:oceanomics/OceanGenomes/illumina-raw/NOVA_240716_AMD  --checksum
+rclone copy $download s3:oceanomics/OceanGenomes/illumina-raw/$RUN  --checksum
