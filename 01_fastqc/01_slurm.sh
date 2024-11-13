@@ -18,4 +18,4 @@ module load nextflow/23.10.0
 
 unset SBATCH_EXPORT
 
-nextflow run fastqc.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report $results/$RUN.fastqc.html
+nextflow run fastqc.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report fastqc.html

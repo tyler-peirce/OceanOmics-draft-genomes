@@ -12,7 +12,7 @@
 #-----------------
 #Loading the required modules
 
-module load nextflow/23.10.0
+module load nextflow/
 
 . ../configfile.txt
 

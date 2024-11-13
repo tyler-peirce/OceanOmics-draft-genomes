@@ -119,7 +119,7 @@ params.reads="$params.projectDir/*/fastp/*.{R1,R2}.fastq.gz"
     //_________________________________________________________________________________________________________
 
     process megahit {
-        tag "megahit on $sampe_id"
+        tag "megahit on $sample_id"
 
         publishDir "$params.projectDir/${og_num}/assemblies/genome", mode:'copy'
 

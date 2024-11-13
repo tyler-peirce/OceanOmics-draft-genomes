@@ -11,13 +11,13 @@
 
 #-----------------
 
-. ../../configfile.txt
+. ../configfile.txt
 
 # Run these modules the first time you run the script, then comment out
-module load nextflow/23.10.0
-module unload gcc
-module swap pawseyenv/2024.05 pawseyenv/2023.08
-module load gcc
+#module load nextflow/
+#module unload gcc
+#module swap pawseyenv/2024.05 pawseyenv/2023.08
+#module load gcc
 
 #Loading the required modules
 module load singularity/3.11.4-slurm
@@ -27,7 +27,4 @@ unset SBATCH_EXPORT
 export NXF_HOME=$MYSCRATCH/.nextflow
 
 # Running the nextflow
-nextflow run decontamination.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report $results/$RUN.decontamination.html
-
-#code to run in terminal
-#nextflow run decontamination.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report decontamination.html
+nextflow run decontamination.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report decontamination.html

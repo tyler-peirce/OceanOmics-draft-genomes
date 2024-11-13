@@ -14,63 +14,63 @@ The scripts included here are designed to run using singularity containers on a 
 
 # User guide 
 
-There are four main nextflow scripts to run the genome assembly pipeline, each step will generate a set of statistics that can be compiled in either .tsv format or .tdt format using the tsv.compile code. 
-This pipeline assumes you have paired end illumina reads, with lanes pooled together. Please ensure you are familiar with the requirements of storing results in the ogl_ilmn_database, all results from OceanOmics Draft Genomes pipeline will need to be pushed to this git for storage in the sql database (https://github.com/Computational-Biology-OceanOmics/olg_ilmn_database/tree/main).
+The genome assembly pipeline consists of four main Nextflow scripts, each generating a set of statistics that can be compiled into either .tsv or .tdt format using tsv.compile. This pipeline is designed for paired-end Illumina reads with pooled lanes. Ensure you are familiar with the requirements for storing results in the ogl_ilmn_database. All outputs from the OceanOmics Draft Genomes pipeline should be pushed to this Git repository for SQL database storage: ogl_ilmn_database GitHub.
 
-For simplicity there is a configfile.txt in the main directory. This is the file that you will need to update with the run details. You should not have to edit any of the scripts as this file is read into the nextflow and bash scripts to reduce human error.
+A configfile.txt in the main directory needs updating with the specific run details. This file is read by Nextflow and bash scripts to minimise the need for manual script edits and reduced errors.
 
-Within each directory the files are numbered in the order that they need to be run. The nextflow scripts can either be submitted using the slurm script, or run in the workflow node in a TMUX session on Pawsey (or the system you are using to run this pipeline).
+Within each directory, files are numbered in the order they should be run. Nextflow scripts can be submitted via the SLURM script or executed in a TMUX session on the workflow node on Pawsey by copying the line of code in the 01_slurm.sh script (or an equivelent terminal on your system).
+
+The nextflow.config file specifies the Singularity containers and SLURM settings for each step. These settings or cantainers can be updated in this file.
+
+# Config File
+After the repository has been cloned from git onto your scratch, you need to update the configfile.txt in the main directory. There are instructions within the file. Once these have been updated you should not have to change any of the other scripts.
 
 # Data Management
 
-The 00_data_management directory contains the script for downloading the sequencing runs from basespace (01). There are also scripts for backing up to our file system, these will need to be adapted for your data management system. 02 and 03 are for backing up the raw data and undertaking an audit to make sure the files are the same once they have been coppied. 04 pools the multiple lanes together and reads in 04a as part of this process. 05 and 06 are for backing up the pooled data and doing an audit.
+The 00_data_management directory contains scripts for managing sequencing data which have been numbered in the order they should be run:
+
+01: Download sequencing runs from BaseSpace.
+02 & 03: Back up raw data and perform an audit to verify file sizes after copying. Adapt these scripts as needed for your data management system.
+04: Pools multiple lanes together, reading in 04a as part of this process.
+05 & 06: Back up the pooled data and conduct an audit to ensure data integrity.
 
 # Reads Quality Control
 
-The 01_fastqc directory contains the first part of the nextflow pipeline.
+The 01_fastqc directory contains the first part of the Nextflow pipeline, which processes raw reads with pooled lanes through fastqc, fastp, and multiqc. An R script is also included to compile results from the fastp JSON file.
 
-This takes the raw reads with lanes pooled together then runs programs: fastqc, fastp, and multiqc.
-It also includes an R script to compile results from the fastp json file. 
+Submit 01_slurm.sh, or run in the workflow node terminal, making sure to load the Singularity and Nextflow modules.
 
-The nextflow.config file outlines the singularity containers used in each step including the slurm script settings. 
+The 02_fastp-compile.sh script is then run to aggregate outputs across a run, which can then be pushed to the SQL database.
 
-After you have cloned the repo onto your scratch you can run the nextflow from within the fasqc folder. To run the nextflow module update the **file paths** for the raw reads in the **fastqc.nf** script, and the **output paths** formatted to mirror the directory structure outlined below. 
+Expected Directory Structure after running the Nextflow:
 
-Submit the slurm.sh script ensuring you have loaded the **singularity module and nextflow module** and have **updated name for the html report**. 
-
-Within this directory you will find a **fastp-compile.sh** script. This will gather the outputs across a run and compile them into a list which will be pushed into the sql database.
-
-Directory structure
 ```
 Project-dir/  
 └── OG303  
     └── fastp
-            *fastq.gz
+         *fastq.gz
          └── fastqc
-                *fastqc-stats*
-``` 
-At the end of the fastqc nextflow you should have a directory structure like the one above, with the filtered and trimmed fastq files in the fastp directory, and the results of fastqc in the fastqc directory. 
+             *fastqc-stats*
+```
 
-Run the fastqc-backup.sh script to backup filtered and trimmed reads to acacia. 
+Upon completion, the directory should contain filtered and trimmed .fastq files in the fastp directory and fastqc results in the fastqc directory.
+
+Use 03_fastqc-backup.sh to back up filtered and trimmed reads to Acacia.
 
 # Genome Assembly
 
-The assembly directory contains the second part of the nextflow pipeline, which uses the filtered and trimmed reads output from the previous nextflow. (the *fastq.gz files in the fastp directory)
+The assembly directory contains the second part of the nextflow pipeline, which uses the filtered and trimmed reads from the previous nextflow. (the *fastq.gz files in the fastp directory)
 
 The assembly.nf script runs the programs: meryl, GenomeScope and MEGAHIT. 
 
-The nextflow.config outlines the singularity containers used in each step as well as the slurm script settings. This nextflow can be run from within the assembly directory. 
+Submit 01_slurm.sh, or run in the workflow node terminal, making sure to load the Singularity and Nextflow modules.
 
-To run the nextflow module update the file paths for the filtered and trimmed reads in the assembly.nf script and the output paths to the directory structure below. 
+Run the 02_genomescope-compile.sh script to compile the outputs across a run, which can then be pushed to the SQL database.
 
-Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and updated the name for the html report. 
-
-Run the genomescope-compile.sh script to gather the outputs across a run and compile them into a list which will be pushed into the sql database.
-
-Directory Structure
+Expected Directory Structure after running the Nextflow:
 
 ```
-project-dir/
+Project-dir/
 └── OG303
     ├── assemblies
     │   └── genome
@@ -87,43 +87,51 @@ At the end of the assembly nextflow pipeline you should have a directory structu
 
 # Decontamination 
 
-Following genome assembly three separate genome decontamination tools are used to detect and remove any foreign contaminates from within the genome. Scripts for these can be found in the decontamination folder. 
+The decontamination nextflow is the third step of the pipeline, which will use three separate genome decontamination tools to detect and remove any foreign contaminates from within the genome. 
+
+Note: there is a repullfatp.sh script to re pull the fastp files if they have been deleted.
+
+Firstly, you will need to run the species check in the 00_species_check directory. The nomspecies.txt file will need updating to ensure all the OG numbers are captured. To update this file copy the OG number and nominal species ID columns from the lab database into this file and save. Then run the 01_speciescheck.sh script. This script uses TAXONKIT to determine if its a fish or a vertebrate and finds the taxon ID. There are some instrucrtions within this script that need executing if it is the first time you are running this script.
+
+You need to go and check the taxon.txt output from the 01_speciescheck.sh to ensure that each sample has been assigned either 'vertebrate' or 'actinopterygii' and that it has a taxon id number. If these are missing you need to manually enter them into the file, making sure to put it in the right tab deliminated column.
+
+Once complete, you can then run the nextflow by submitting 01_slurm.sh, or run in the workflow node terminal, making sure to load the Singularity and Nextflow modules.
+
+The following is a description of what each process in the nextflow does:
 
 **1. NCBI fcs (foreign contaminant screen).** 
-This tool screens the genome against NCBI databases and searches for contaminants in the genome based off the NCBI taxonomy number given in the script. The example script contains the NCBI taxon ID for Actinopterygii (Ray fin fishes). Please ensure you update this number in the script based off the genome you are working on. 
+This tool screens the genome against NCBI databases and searches for contaminants in the genome based off the NCBI taxonomy number. 
 
-There are 2 scripts for this process
-  1. The first script screens the genome and generates a report containing all contaminates found. This report is split into 3 categories that any contig can fit within, (EXCLUDE, TRIM & REVIEW). 
-  2. The second script uses reviews this report and removes all contigs marked as EXCLUDE, removes any contigs that are less than >1000BP marked as REVIEW, & finally filters out any contigs that are less than 500BP from the assembly. At the   
-     same time this script will run a series of bash commands to summaries the number of contigs and number of BP removed at each step. These will be printed in 3 tsv files:
-     **$sample_NCBI_filter_report.tsv:**  report that showing the number of contigs filtered as well as the total number of BP filtered, it also prints the number of contigs that are less than 1000bp in the REVIEW sections of the report and the
+There are 2 processes for this:
+  1. The fcs-gx tool screens the genome and generates a report containing all contaminates found. This report is split into 3 categories that any contig can fit within, (EXCLUDE, TRIM & REVIEW). 
+  2. The fcs-gx clean, reviews this report and removes all contigs marked as EXCLUDE, removes any contigs that are less than >1000BP marked as REVIEW, & finally filters out any contigs that are less than 500BP from the assembly. 
+  
+**2. bbmap filter**  
+This process will run a series of bash commands to summaries the number of contigs and number of BP removed at each step. These will be printed in 3 tsv files:
+     **$sample.filter_report.tsv:**  report that showing the number of contigs filtered as well as the total number of BP filtered, it also prints the number of contigs that are less than 1000bp in the REVIEW sections of the report and the
      total bp of those contigs
-     **$sample_NCBI_contig_count_500bp.tsv** : this prints the number of contigs in sample that have less than 500bp 
+     **$sample.contig_count_500bp.tsv** : this prints the number of contigs in sample that have less than 500bp 
+     **$sample.review_scaffolds_1kb.txt**: this prints the contigs that are in review and less than 1000bp
+bbmap then uses these files to filter out these contigs. The filterbyname.sh step outputs **$sample.rf.fa** which uses the **$sample.review_scaffolds_1kb.txt** to remove these contigs. The reformat.sh step then removes all the contigs under 500bp leaving the **$sample.fa** file.
 
-
-To run these scripts please refer to scripts NCBI_find_contam.sh filter_NCBI.sh. If you are running this across a large amount of files please see the NCBI farming scripts, which contain loops to submit one slurm job per assembly file.
-the NCBI compile scripts will compile the results of the NCBI decontamination step, to be pushed into the sql database. 
 
 The filtered fasta file will have an *.fa extension and is to be used in the next decontamination process. 
 
 **2. NCBI Adaptor contamination removal**
-This tool searches the *.fa decontaminated genome for any adaptor and vector contaminaion. There are 2 main scripts for this tool. 
-    1. find-adaptors.sh, which can be used with farm_find-adaptor-contam.sh. This script will search the genome for adaptor contamination and produce a 
-    adaptor-report.txt file to be used to clean the genome of adaptor contamination. The script check-adaptor-report-exists.sh can be run to check if this process     has been successful before moving onto the next step. 
-    2. filter-adaptors.sh, which can be used with farm_filter-adaptors.sh, will clean the adaptor contamination from the genome. Upon successful completion of         this step you will have a fasta file in the genomes dirctory called $assembly.rmadapt.fasta, which will be used in the next process. To ensure this has             compleated succesfuly the script check-rmadapt-exists.sh will search for the *.fasta file, check for contents and prints a .txt file with these results.
+This tool searches the *.fa decontaminated genome for any adaptor and vector contaminaion. There are 2 main processes for this tool. 
+    1. The first will search the genome for adaptor contamination and produce a 
+    adaptor-report.txt file to be used to clean the genome of adaptor contamination. 
+    2. filter-adaptors will clean the adaptor contamination from the genome. Upon successful completion of this step you will have a fasta file in the genomes dirctory called $assembly.rmadapt.fasta, which will be used in the next process. 
 
 
 **3. Tiara decontamination**
 This tool searches the NCBI decontaminated genome for additional contamination particularity Mitochondrial. 
-There are 2 scripts for this process 
 
-The first script screens the genome and outputs three fasta files with the mitochondrial, plastid and protist contigs which it deems to be contamination. 
-The second script compiles the contamination into a report, showing the type, number of contigs and how many base pairs. This report is then used with BBMap to filter out the contaminate contigs. 
-These reports are to be compile with the tiara-compile.sh scripts and pushed to github to be held in the database.
+The first process screens the genome and outputs three fasta files with the mitochondrial, plastid and protist contigs which it deems to be contamination. It then compiles the contamination into a report, showing the type, number of contigs and how many base pairs. 
 
 
-To run these scripts please refer to tiara_find_contam.sh filter_tiara.sh for slurm scripts and to the tiara farming scripts which contain loops to submit one slurm job per assembly file
-
+**4. bbmap filtering**
+The report from the tiara decontamination process is then used with BBMap to filter out the contaminate contigs. 
 
 The final decontaminated fasta file will have a .fna extension, this is to be used for genome QC and downstream processes.
 
@@ -146,21 +154,26 @@ project-dir/
 
 ```
 
-At the end of the decontamination script you should the output of the NCBI decontamination and the output if the tiara decontamination in their directories, and the intermediate fasta files in the genomes directory, where the *.fasta was the inital assembly, the *.fa is the assembly after NCBI decontamination, and the *.fna is the final decontaminated fasta after both NCBI and tiara decontamination.
+At the end of the decontamination nextflow pipline you should have a directory structure like the one above. With sepperate directories for the tiara results and the NCBI adaptor contamination. The intermediate fasta files should be in the genomes directory, where the *.fasta was the inital assembly, the *.fa is the assembly after NCBI decontamination, and the *.fna is the final decontaminated fasta after both NCBI and tiara decontamination.
 
-At the end of this step, run the final_aws_backup.sh script to back up the final genome assembly file and filtered and trimmed reads to AWS.
+At the end of this step, run the 04_final_aws_backup.sh script to back up the final genome assembly file and the filtered and trimmed reads to AWS.
+
+Then run the 05_Data_audit_AWS script, this will calculate the number of files and the size of each directory for: the local AWS backup directory, and the backed up files on AWS. You are able to then check that everything has been copied fully over to AWS.
 
 # Genome Quality Metrics
 
 The following workflow will run through a series of tools to obtain quality metrics for the assembly quality of the genome. Upon completion, results are to be compiled and pushed to the olg_ilmn_database. 
 
-This workflow can be run from the Genome QC nextflow , or as a series of scripts farmed out across a run.
+This workflow can be run from the Genome QC nextflow, or as a series of scripts farmed out across a run.
 
 **GenomeQC Nextflow**
 
-It is important that you have followed the directory structure of the previous nextflows to continue on with this workflow. The genomeQC directory contains the nextflow pipeline, which takes the decontaminated genome, meryl database and fastq files as input. the genome.nf script runs programs BUSCO, BWA/Samtools, Merqury and Depthsizer. The nextflow.config outlines the singulairty containers used in each step as well as the slurm script settings. The bin directory contains an R script to compile results from BUSCO.  This nextflow can be run from within the genomeQC directory. To run the nextflow module update the project directory path. Submit the slurm.sh script ensuring you have loaded both the singularity module and nextflow module and have updated name for the html report.
+It is important that you have followed the directory structure of the previous nextflows to continue on with this workflow. The 04_genomeQC directory contains the nextflow pipeline, which takes the decontaminated genome, meryl database and fastq files as input. the genome.nf script runs the programs: BUSCO, BWA/Samtools, Merqury and Depthsizer. 
 
-Please note that there are two busco processes in this nextflow, one that uses the actinopterygii_odb10 and one that uses the vertebrata_odb10, please ensure you are using the correct database for the samples you are processing. The two processes have been added to make it easier to get the correctly named outputs without having to edit the scripts. 
+Submit 01_slurm.sh, or run in the workflow node terminal, making sure to load the Singularity and Nextflow modules.
+
+Please note that there are two busco and bwa processes in this nextflow, one that uses the actinopterygii_odb10 and one that uses the vertebrata_odb10. The pipeline will read in the taxon.txt file created in the decontamination step using the 01_species_check.sh script in the 00_species_check directory. Make sure that each line in this file has successfully been assigned 'vertebrate' or 'actinopterygii'. If it hasnt successfully been assigned one, edit this file with the correct assignment.
+
 
 ```
 project-dir/
@@ -178,19 +191,26 @@ project-dir/
 
 ```
 
-At the end of the piepline you should have a directory structure like this, with results from BWA, depthsizer and busco in directories within the genome directory, and the results of Merqury will be within the kmers directory. To compile these results and push them to the SQL database, please refer to the instructions below for locations of the compilation scripts. 
+At the end of the piepline you should have a directory structure as above, with results from BWA, depthsizer and busco in directories within the genome directory, and the results of Merqury will be within the kmers directory. 
+
+To compile these results run the scripts 02a, 02b, and 02c and push them to the SQL database.
 
 
 
 # Data Back up and Auditing
-There are three scripts in the genomeQC directory for data back up and auditing. In order run:
+There are four scripts in the 05_backup_audit directory for data back up and auditing. These scripts will back up all data to acacia, as well as generate TSV files that show the size of each directory before and after backup to ensure the backup has completed properly.
 
-1. aws_final_backup.sh
-2. Data_Audit.sh  (leave out the acaica part at this stage)
-3. final-genome-backup.sh
-4. Data_Audit.sh (run the acacia part at this stage) 
+In order run:
 
-These scripts will back up all data to acacia and to aws as well as generate CSV files that show the size of each directory before and after backup to ensure the backup has compleated properly. 
+    00_check_files.sh - This script will check that you have all the files for every sample. Copy the tsv over to excel for easier visualisation. This script can be used at other times throughout the pipeline to track files.
+
+    01_Data_audit_local.sh - This will calculate the number of files and the size of each samples directory for the total workflow output in the output directory.
+
+    02_final-genome-backup.sh - This script will move the whole output directory over to acacia. NOTE: this moves everything, not copy, so no files will be left on your scratch.
+
+    03_Data_audit_acacia.sh - This script will caculate the number of files and the size of each samples directory on Acacia for comparison with the previous calculations. 
+
+ 
 
 
 

@@ -246,3 +246,7 @@ for OGdir in $rundir/*; do
         fi
     done >> FileCheck/$OG.files.tsv
 done
+
+
+
+paste 00a_file_list.tsv FileCheck/* > FileCheck.tsv

@@ -23,10 +23,9 @@ for i in "$rundir"/OG*; do
         SAMPLE=$(basename "$i")
         fasta="$rundir/$SAMPLE/assemblies/genome/*.fna"
         reads="$rundir/$SAMPLE/fastp/*.fastq.gz"
-        wrkdir=$(dirname "$(dirname "$i")")
-        dir=$wrkdir/AWS_backup
-        mkdir -p $dir
-        newdir=$dir/$SAMPLE
+        
+        mkdir -p $AWS
+        newdir=$AWS/$SAMPLE
         mkdir -p $newdir
                 
         #(this will put the *.fna & reads into directorys with their OG numbers for storage)
@@ -47,5 +46,5 @@ done
 wait 
 
 # you can use either rclone or aws to copy the files over. Hash out which ever one you dont want to use.
-rclone copy $dir/ s3://oceanomics/OceanGenomes/analysed-data/draft-genomes/ --checksum #--progress
+rclone copy $AWS/ s3://oceanomics/OceanGenomes/analysed-data/draft-genomes/ --checksum #--progress
 #aws s3 cp --recursive $dir s3://oceanomics/OceanGenomes/analysed-data/draft-genomes/

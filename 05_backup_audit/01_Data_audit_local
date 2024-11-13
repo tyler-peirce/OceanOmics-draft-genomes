@@ -14,11 +14,9 @@
 #1. Generate txt file of OG numbers in directory called OGLIST.txt
 # Set the CSV file name
 
-CSV=$results/draftcheck-workflow-local.$DATE.csv
-# Print the CSV header
-echo OGID,LocNum,LocSize,LocBytes | tee -a $CSV
-
-echo "CSV = $CSV"
+TSV_WF=draftcheck-workflow-local.$DATE.tsv
+# Print the TSV header
+echo -e "OGID\tLocNum\tLocSize\tLocBytes" | tee -a $TSV_WF
 
 # Create the OGLIST from the data audit
 OGLIST_FILE=$results/OGLIST.txt
@@ -29,6 +27,6 @@ while IFS= read -r OGID; do
   # Get the sizes from rclone for each location
   SIZES=$(echo $(rclone size $rundir/$OGID | sed 's/Total/|-- Local/g'))
   
-  # Format and append the results to the CSV
-  echo $OGID $SIZES | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /,/g' | tee -a $CSV
+  # Format and append the results to the TSV
+  echo $OGID $SIZES | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /\t/g' | tee -a $TSV_WF
 done < "$OGLIST_FILE"

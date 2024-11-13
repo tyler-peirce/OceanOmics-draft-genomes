@@ -14,7 +14,7 @@
 . ../configfile.txt
 
 # Run these modules the first time you run the script, then comment out
-module load nextflow/24.04.3
+module load nextflow/
 module unload gcc
 module swap pawseyenv/2024.05 pawseyenv/2023.08
 module load gcc
@@ -27,6 +27,4 @@ unset SBATCH_EXPORT
 export NXF_HOME=$MYSCRATCH/.nextflow
 
 # Running the nextflow
-nextflow run genome.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report $results/$RUN.genomeQC.html
-#code to run in terminal
-#nextflow run genome.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report genomeQC.html
+nextflow run genome.nf -c nextflow.config -profile setonix -resume -disable-jobs-cancellation -with-report genomeQC.html
