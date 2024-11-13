@@ -4,15 +4,15 @@ module load python/3.11.6
 
 # Update these variables for the run that you are processing
 
-RUN=NOVA_240716_AMD
-DATE=240716
+RUN=NOVA_240813_AMD
+DATE=240813
 WRKDIR=/scratch/pawsey0812/tpeirce/DRAFTGENOME
 
 # Update the location of where you would like your output, or leave as is.
-rundir=$WRKDIR/OUTPUT_OG2
+rundir=$WRKDIR/OUTPUT_$RUN
 
 # Update to the location of your Git clone, or make sure it is in your WRKDIR
-scripts=$WRKDIR/OceanOmics-draft-genomesOG2
+scripts=$WRKDIR/OceanOmics-draft-genomes$RUN
 
 
 # Leave these variables as is as the scripts use these locations based on the above variables.
