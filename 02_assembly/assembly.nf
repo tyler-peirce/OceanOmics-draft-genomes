@@ -127,7 +127,7 @@ params.reads="$params.projectDir/*/fastp/*.{R1,R2}.fastq.gz"
             tuple val(og_num), val(sample_id), path(reads)
 
         output:
-            tuple val(sample_id), path("${sample_id}.v129mh.fasta")
+            tuple val(sample_id), path("${sample_id}.v129mh.fasta.gz")
 
         script:
         
