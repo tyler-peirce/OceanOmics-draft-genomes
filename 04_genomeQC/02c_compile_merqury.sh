@@ -3,6 +3,8 @@
 # Load in the configfile
 . ../configfile.txt
 
+mkdir -p $results
+
 ### COMPILE completeness stats 
 
 output_file=$results/"$DATE"_merqury.completeness.stats.tsv

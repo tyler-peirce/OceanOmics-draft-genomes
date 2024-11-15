@@ -3,6 +3,8 @@
 # Load in the configfile
 . ../configfile.txt
 
+mkdir -p $results
+
 # Define the output file and create the column headings
 TSV=$results/"$DATE"_genomescope_compiled_results.tsv
 echo Sample,Homozygosity,Heterozygosity,GenomeSize,RepeatSize,UniqueSize,ModelFit,ErrorRate | sed 's/,/\t/g' | tee $TSV

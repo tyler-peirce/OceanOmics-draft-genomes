@@ -4,6 +4,7 @@
 # Load in the configfile
 . ../configfile.txt
 
+mkdir -p $results
 
 cd $rundir
 

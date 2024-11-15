@@ -3,6 +3,8 @@
 # Load in the configfile
 . ../configfile.txt
 
+mkdir -p $results
+
 ####
 #Filter report 
 ####

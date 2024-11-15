@@ -3,6 +3,8 @@
 # Load in the configfile
 . ../configfile.txt
 
+mkdir -p $results
+
 cd $rundir
 
 output_file=$results/"$DATE"_depthsizer_results.tsv
