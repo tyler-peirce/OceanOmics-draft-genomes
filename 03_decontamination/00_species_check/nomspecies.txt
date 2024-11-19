@@ -69,7 +69,7 @@ OG67	Cochleoceps spatula
 OG68	Genus C Species 2 undescribed sp.
 OG69	Parvicrepis sp. 
 OG70	Alabes occidentalis
-OG71	Heteroclinus sp. 2
+OG71	Heteroclinus
 OG72	Omegophora cyanopunctata
 OG73	Siphamia cephalotes
 OG74	Genus C Species 2 undescribed sp.

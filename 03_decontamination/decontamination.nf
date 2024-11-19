@@ -94,8 +94,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
         
             def args = task.ext.args ?: ''
             def prefix = task.ext.prefix ?: "${sample_id}"
-            def FCSGX_VERSION = '0.5.4'
-        
+                    
             """
             echo ‘copying’
                 mkdir /tmp/gxdb/
@@ -107,19 +106,20 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             echo ‘done copying’ 
             ls -l /tmp/gxdb/
            
-            export taxid=\$(cat "${params.results}/taxon.txt" | grep -w ${og_num} | awk -F'\\t' '{print \$4}')
+            taxid=\$(cat "${params.results}/taxon.txt" | grep -w ${og_num} | awk -F'\\t' '{print \$4}')
             echo "taxid: \$taxid"
             python3 /app/bin/run_gx \\
                 --fasta ${assembly} \\
                 --tax-id \$taxid \\
                 --out-dir ./NCBI \\
-                --gx-db /tmp/gxdb                
+                --gx-db /tmp/gxdb \\
+                --debug               
                 
         
             cat <<-END_VERSIONS > NCBI/versions.yml
             "${task.process}":
                 python: \$(python3 --version 2>&1 | sed -e "s/Python //g")
-                FCS-GX: $FCSGX_VERSION
+                FCS-GX: \$( gx --help | sed '/build/!d; s/.*:v//; s/-.*//' )
             END_VERSIONS
             """                    
     }
@@ -185,7 +185,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
         
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
-                FCS-GX: $FCSGX_VERSION
+                FCS-GX: \$( gx --help | sed '/build/!d; s/.*:v//; s/-.*//' )
             END_VERSIONS
             """
     }
@@ -285,10 +285,13 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             def FCSADAPTOR_VERSION = '0.5.0' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
             """            
+            echo "start ${filtered_fasta} "
             av_screen_x \\
                 -o adaptor/ \\
                 $args \\
                 ${filtered_fasta} 
+            
+            echo "end ${filtered_fasta} "
 
             # Add in the prefix to the files
             
