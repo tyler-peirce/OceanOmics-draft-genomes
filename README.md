@@ -211,48 +211,5 @@ In order run:
     03_Data_audit_acacia.sh - This script will caculate the number of files and the size of each samples directory on Acacia for comparison with the previous calculations. 
 
  
-
-
-
-
-
-
-
-
-# Alternative Genome QC workflow
-The workflow can be ran as a series of scripts farmed out across a run (project-directory)
-The following tools are to be incorporated into the QC workflow, please refer to the stand alone scripts within each of the following directories to farm these jobs out across each run. 
-
-**BUSCO 
-BWA 
-Merqury
-DepthSizer**
-
-**BUSCO**
-To run BUSCO please ensure you know what species you are working with, as the database you use for BUSCO will depend on your species. If you are working on Actinoptergii, this database is stored locally on pawsey in the the  /software/projects/pawsey/singularity path. If you require a different database please refer to https://busco.ezlab.org/ to install this locally. 
-
-Please refer to the busco.sh script to run busco independently or the busco-farming.sh to farm jobs out across a RUN of samples. 
-
-Please refer to the compile busco results for a series of scripts that will convert JSON busco results into TSV files and compile those across runs to generate a table of results for the sql database. 
-
-
-**BWA**
-This step is to map the reads back to the assembly file generating a sorted bam file to be used for downstream processes. 
-
-Please refer to BWA.sh to run BWA independently or bwa-famring.sh to farm jobs out across a RUN of samples. 
-
-
-**Samtools stats**
-This step is to check the coverage of the assembly. Please refer to the samtools_stats.sh script to run independently or samtools-farming.sh to farm jobs out across a RUN of samples, these scripts are located within the BWA directory.
-
-
-**Merqury**
-This tool looks at the completeness and QV score of the assembly, please see Merqury.sh for scripts to run independently or merqury-farming.sh to farm jobs out across a RUN of samples. 
-
-Please refer to compile_merqury.sh to compile the completeness an QV scores for the SQL database. 
-
-
-**Depthsizer**
-This tool estimates the genome size of the assembly. Please see Depthsizer.sh run independently or depthsizer-famring.sh to farm jobs out across a RUN of samples.
-
-Please refer to compile_depthsizer.sh to compile the genome size prediction stats for each sample for the SQL database. 
+# Credits
+Computational-Biology-OceanOmics/OceanOmics-OceanGenomes-draft-genomes was originally developed by Rich Edwards and Lauren Huet. Tyler Peirce later enhanced the project by integrating the decontamination process into a Nextflow pipeline and further optimising and automating the entire pipeline.
