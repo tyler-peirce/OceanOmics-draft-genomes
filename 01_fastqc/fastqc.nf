@@ -82,6 +82,12 @@ params.scriptPath = "${baseDir}/bin/fastp-json2tsv.R"
             """
             mkdir fastqc_${sample_id}_logs
             fastqc ${reads[0]} ${reads[1]} -o fastqc_${sample_id}_logs
+
+            
+            cat <<-END_VERSIONS > versions.yml
+            "${task.process}":
+                fastqc: \$( fastqc --version | sed '/FastQC v/!d; s/.*v//' )
+            END_VERSIONS
             """
     }
 

@@ -12,7 +12,7 @@ WRKDIR=/scratch/pawsey0812/tpeirce/DRAFTGENOME
 rundir=$WRKDIR/OUTPUT_$RUN
 
 # Update to the location of your Git clone, or make sure it is in your WRKDIR
-scripts=$WRKDIR/OceanOmics-draft-genomes$RUN
+scripts=$WRKDIR/OceanOmics-draft-genomes$DATE
 
 
 # Leave these variables as is as the scripts use these locations based on the above variables.

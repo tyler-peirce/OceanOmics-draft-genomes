@@ -18,5 +18,5 @@ list=../list.txt
 while IFS= read -r line; do
     og=$(echo "$line")
     echo "og = $og"
-   rclone copy pawsey0812:oceanomics-fastq/$og /scratch/pawsey0812/tpeirce/DRAFTGENOME/OUTPUT_$RUN/$og
+   rclone copy pawsey0812:oceanomics-fastq/$og /scratch/pawsey0812/tpeirce/DRAFTGENOME/OUTPUT_$RUN/$og --checksum --progress
 done < "$list"

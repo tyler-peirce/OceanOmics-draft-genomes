@@ -1,13 +1,12 @@
 #!/bin/bash
 # Load in the configfile
 . ../configfile.txt
-mkdir FileCheck
+mkdir -p FileCheck
 for OGdir in $rundir/*; do
 # Set OG and DATE variables (replace with actual values)
     OG=$(basename $OGdir)
-    DATE=240716
     TAX=$(cat $results/taxon.txt | grep -w $OG | awk -F'\t' '{print substr($2, 1, 4)}')
-    #echo $TAX
+    echo $TAX
     # List of expected files and directories
     file_list=(
         $OGdir/assemblies/genome/busco_$TAX/$OG.ilmn.$DATE.v129mh.fna.busco.$TAX.busco_sequences.tar.gz

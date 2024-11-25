@@ -285,14 +285,11 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             def FCSADAPTOR_VERSION = '0.5.0' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
             """            
-            echo "start ${filtered_fasta} "
             av_screen_x \\
                 -o adaptor/ \\
                 $args \\
                 ${filtered_fasta} 
             
-            echo "end ${filtered_fasta} "
-
             # Add in the prefix to the files
             
                 mv "adaptor/fcs_adaptor_report.txt"    "adaptor/${prefix}.fcs_adaptor_report.txt"

@@ -54,15 +54,15 @@ params.wrkdir = config['WRKDIR']
 params.results ="$params.wrkdir/${params.date}_results"
 
 // Define the pattern to match sample directories
-samplePattern = params.projectDir + "/*"
+samplePattern = params.projectDir + "/OG*"
 // Define the pattern to match assembly files
 assemblyPattern = samplePattern + "/assemblies/genome/*.fna"
 // Call the assemblies using the assembly pattern
 params.assembly = file(assemblyPattern)
 
 params.sample_ID = file("$projectDir").getName()
-params.fastq="$params.projectDir/*/fastp/*.{R1,R2}.fastq.gz"
-params.meryldb ="$params.projectDir/*/kmers/*.meryl"
+params.fastq = samplePattern + "/fastp/*.{R1,R2}.fastq.gz"
+params.meryldb =  samplePattern + "/kmers/*.meryl"
 params.scriptPath = "${baseDir}/bin/busco2tsv.R"
 params.lineage_acti_db = "/scratch/references/busco_db/actinopterygii_odb10"
 params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
@@ -177,7 +177,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
 
         script:
         """
-        busco -i ${assembly} -o ${assembly}.busco.vert -l ${params.lineage_vert_db} -m genome -c 8 -f
+        busco -i ${assembly} -o ${assembly}.busco.vert -l ${params.lineage_vert_db} -m genome -c 16 -f
         mv ${assembly}.busco.vert/run_vertebrata_odb10/short_summary.txt ${assembly}.busco.vert.short_summary.txt
         mv ${assembly}.busco.vert/run_vertebrata_odb10/short_summary.json ${assembly}.busco.vert.short_summary.json
         mv ${assembly}.busco.vert/run_vertebrata_odb10/full_table.tsv ${assembly}.busco.vert.full_table.tsv

@@ -59,7 +59,7 @@ params.pooled = config['pooled']
 params.results = config['results']
 
 params.projectDir = "$params.rundir"
-params.reads="$params.projectDir/*/fastp/*.{R1,R2}.fastq.gz"
+params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
 
 //_________________________________________________________________________________________________________
 // |||| Processes ||||
