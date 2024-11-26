@@ -120,10 +120,18 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
         path "${assembly}.busco.acti.busco_sequences.tar.gz.md5", emit: md5
         path "${assembly}.busco.acti.missing_busco_list.tsv", emit: missing_tsv
         path "${assembly}.busco.acti.logs", emit: logs
+        path "versions_busco.yml"
 
         script:
         """
-        busco -i ${assembly} -o ${assembly}.busco.acti -l ${params.lineage_acti_db} -m genome -c 8 -f
+        busco \\
+            -i ${assembly} \\
+            -o ${assembly}.busco.acti \\
+            -l ${params.lineage_acti_db} \\
+            -m genome \\
+            -c 8 \\
+            -f
+        
         mv ${assembly}.busco.acti/run_actinopterygii_odb10/short_summary.txt ${assembly}.busco.acti.short_summary.txt
         mv ${assembly}.busco.acti/run_actinopterygii_odb10/short_summary.json ${assembly}.busco.acti.short_summary.json
         mv ${assembly}.busco.acti/run_actinopterygii_odb10/full_table.tsv ${assembly}.busco.acti.full_table.tsv
@@ -133,6 +141,11 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
 
         tar -czvf ${assembly}.busco.acti.busco_sequences.tar.gz ${assembly}.busco.acti.busco_sequences
         md5sum ${assembly}.busco.acti.busco_sequences.tar.gz > ${assembly}.busco.acti.busco_sequences.tar.gz.md5 &&  rm -rf ${assembly}.busco.acti.busco_sequences
+        
+        cat <<-END_VERSIONS > versions_busco.yml
+        "${task.process}":
+            busco: \$( busco --version 2>&1 | sed 's/^BUSCO //' )
+        END_VERSIONS
         """
     }
 
@@ -174,10 +187,17 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
         path "${assembly}.busco.vert.busco_sequences.tar.gz.md5", emit: md5
         path "${assembly}.busco.vert.missing_busco_list.tsv", emit: missing_tsv
         path "${assembly}.busco.vert.logs", emit: logs
+        path "versions_busco.yml"
 
         script:
         """
-        busco -i ${assembly} -o ${assembly}.busco.vert -l ${params.lineage_vert_db} -m genome -c 16 -f
+        busco \\
+        -i ${assembly} \\
+        -o ${assembly}.busco.vert \\
+        -l ${params.lineage_vert_db} \\
+        -m genome \\
+        -c 36 \\
+        -f
         mv ${assembly}.busco.vert/run_vertebrata_odb10/short_summary.txt ${assembly}.busco.vert.short_summary.txt
         mv ${assembly}.busco.vert/run_vertebrata_odb10/short_summary.json ${assembly}.busco.vert.short_summary.json
         mv ${assembly}.busco.vert/run_vertebrata_odb10/full_table.tsv ${assembly}.busco.vert.full_table.tsv
@@ -187,6 +207,11 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
 
         tar -czvf ${assembly}.busco.vert.busco_sequences.tar.gz ${assembly}.busco.vert.busco_sequences
         md5sum ${assembly}.busco.vert.busco_sequences.tar.gz > ${assembly}.busco.vert.busco_sequences.tar.gz.md5 &&  rm -rf ${assembly}.busco.vert.busco_sequences
+
+        cat <<-END_VERSIONS > versions_busco.yml
+        "${task.process}":
+            busco: \$( busco --version 2>&1 | sed 's/^BUSCO //' )
+        END_VERSIONS
         """
     }
 
@@ -207,60 +232,143 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
 
 
     //_________________________________________________________________________________________________________
-    // BWA align process
+    // BWA index process
     //_________________________________________________________________________________________________________
 
-    process bwa_align_acti {
-        tag "bwa_align_acti on $ognum"
+        process BWAMEM2_INDEX {
+            tag "BWAMEM2_INDEX on $ognum"
 
-        publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/bwa", mode: 'copy'
+            input:
+                tuple val(ognum), path(reads), path(assembly), val(lineage)
 
-        when: 
-        "${lineage}" == 'actinopterygii'
+            output:
+                tuple val(ognum), path("bwamem2"), path(reads), path(assembly), val(lineage), emit: index
+                path "versionsbwa_index.yml"             , emit: versions
 
-        input:
-        tuple val(ognum), path(reads), path(assembly), val(lineage)
+            when:
+                task.ext.when == null || task.ext.when
 
-        output:
-        tuple val(ognum), path("${ognum}.sorted.bam"), emit: sorted_bam
-        path ("${ognum}-sn_results.tsv")
+            script:
+                def prefix = task.ext.prefix ?: "${assembly}"
+                def args = task.ext.args ?: ''
+                """
+                mkdir bwamem2
+                bwa-mem2 \\
+                    index \\
+                    $args \\
+                    $assembly \\
+                    -p bwamem2/${prefix}
 
-        script:
-        """ 
-        bwa index ${assembly} 
-        bwa mem -t 24 ${assembly} ${reads[0]} ${reads[1]} > ${ognum}.aligned.sam
-        samtools view -S -b ${ognum}.aligned.sam | samtools sort -o ${ognum}.sorted.bam -
-        samtools index ${ognum}.sorted.bam
-        wait
-        samtools stats ${ognum}.sorted.bam | grep "^SN" | cut -f 2- > ${ognum}-sn_results.tsv
-        """
-    }
+                cat <<-END_VERSIONS > versions_bwaindex.yml
+                "${task.process}":
+                    bwamem2: \$(echo \$(bwa-mem2 version 2>&1) | sed 's/.* //')
+                END_VERSIONS
+                """
 
-        process bwa_align_vert {
-        tag "bwa_align_vert on $ognum"
+        }
 
-        publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/bwa", mode: 'copy'
+    //_________________________________________________________________________________________________________
+    // BWA align process - Acti
+    //_________________________________________________________________________________________________________
 
-        when: 
-        "${lineage}" == 'vertebrate'
+        process BWAMEM2_MEM_ACTI {
+            tag "BWAMEM2_MEM on $ognum"
 
-        input:
-        tuple val(ognum), path(reads), path(assembly), val(lineage)
+            input:
+                tuple val(ognum), path(index), path(reads), path(assembly), val(lineage)
 
-        output:
-        tuple val(ognum), path("${ognum}.sorted.bam"), emit: sorted_bam
-        path ("${ognum}-sn_results.tsv")
+            output:
+                tuple val(ognum), path("${ognum}.sorted.bam"), emit: sorted_bam
+                path ("${ognum}-sn_results.tsv")
+                path  "versions_bwa.yml"            , emit: versions
 
-        script:
-        """ 
-        bwa index ${assembly} 
-        bwa mem -t 24 ${assembly} ${reads[0]} ${reads[1]} > ${ognum}.aligned.sam
-        samtools view -S -b ${ognum}.aligned.sam | samtools sort -o ${ognum}.sorted.bam -
-        samtools index ${ognum}.sorted.bam
-        wait
-        samtools stats ${ognum}.sorted.bam | grep "^SN" | cut -f 2- > ${ognum}-sn_results.tsv
-        """
-    }
+            when:
+                "${lineage}" == 'actinopterygii'
+
+            script:
+                def args = task.ext.args ?: ''
+                def args2 = task.ext.args2 ?: ''
+                def prefix = task.ext.prefix ?: "${ognum}"
+                
+                def extension_pattern = /(--output-fmt|-O)+\s+(\S+)/
+                def extension_matcher =  (args2 =~ extension_pattern)
+                def extension = extension_matcher.getCount() > 0 ? extension_matcher[0][2].toLowerCase() : "bam"
+                def reference = assembly && extension=="cram"  ? "--reference ${assembly}" : ""
+                if (!assembly && extension=="cram") error "Fasta reference is required for CRAM output"
+
+                """
+                INDEX=`find -L ./ -name "*.amb" | sed 's/\\.amb\$//'`
+
+                bwa-mem2 \\
+                    mem \\
+                    -t 24 \\
+                    \$INDEX \\
+                    $reads \\
+                    | samtools view -b | samtools sort -o ${ognum}.sorted.bam -
+                    samtools index ${ognum}.sorted.bam
+                    wait
+                    samtools stats ${ognum}.sorted.bam | grep "^SN" | cut -f 2- > ${ognum}-sn_results.tsv
+
+                cat <<-END_VERSIONS > versions_bwa.yml
+                "${task.process}":
+                    bwamem2: \$(echo \$(bwa-mem2 version 2>&1) | sed 's/.* //')
+                    samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
+                END_VERSIONS
+                """
+
+        }
+    
+    //_________________________________________________________________________________________________________
+    // BWA align process - Vert
+    //_________________________________________________________________________________________________________
+        
+        process BWAMEM2_MEM_VERT {
+            tag "BWAMEM2_MEM on $ognum"
+
+            input:
+                tuple val(ognum), path(index), path(reads), path(assembly), val(lineage)
+
+            output:
+                tuple val(ognum), path("${ognum}.sorted.bam"), emit: sorted_bam
+                path ("${ognum}-sn_results.tsv")
+                path  "versions_bwa.yml"            , emit: versions
+
+            when:
+                "${lineage}" == 'vertebrate'
+
+            script:
+                def args = task.ext.args ?: ''
+                def args2 = task.ext.args2 ?: ''
+                def prefix = task.ext.prefix ?: "${ognum}"
+                
+                def extension_pattern = /(--output-fmt|-O)+\s+(\S+)/
+                def extension_matcher =  (args2 =~ extension_pattern)
+                def extension = extension_matcher.getCount() > 0 ? extension_matcher[0][2].toLowerCase() : "bam"
+                def reference = assembly && extension=="cram"  ? "--reference ${assembly}" : ""
+                if (!assembly && extension=="cram") error "Fasta reference is required for CRAM output"
+
+                """
+                INDEX=`find -L ./ -name "*.amb" | sed 's/\\.amb\$//'`
+
+                bwa-mem2 \\
+                    mem \\
+                    -t 48 \\
+                    \$INDEX \\
+                    $reads \\
+                    | samtools view -b | samtools sort -o ${ognum}.sorted.bam -
+                    samtools index ${ognum}.sorted.bam
+                    wait
+                    samtools stats ${ognum}.sorted.bam | grep "^SN" | cut -f 2- > ${ognum}-sn_results.tsv
+
+                cat <<-END_VERSIONS > versions_bwa.yml
+                "${task.process}":
+                    bwamem2: \$(echo \$(bwa-mem2 version 2>&1) | sed 's/.* //')
+                    samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
+                END_VERSIONS
+                """
+
+        }
+
 
     //_________________________________________________________________________________________________________
     // Merqury process
@@ -277,6 +385,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
             path("*.completeness.stats")
             path("*.png")
             path("*.qv")
+            path "versions_merqury.yml"
 
         script:
             def VERSION = 1.3 // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
@@ -296,7 +405,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
                 ${assembly} \\
                 ${assembly.baseName}.merqury
 
-            cat <<-END_VERSIONS > versions.yml
+            cat <<-END_VERSIONS > versions_merqury.yml
             "${task.process}":
                 merqury: $VERSION
             END_VERSIONS
@@ -323,7 +432,14 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
 
         script:
         """
-        python /opt/depthsizer_code/scripts/depthsizer.py -seqin ${assembly} -bam '${sorted_bam}' -busco '${busco_full_table}' -reads ${reads[0]},${reads[1]} -basefile=${assembly}.depthsizer -forks 40 i=-1 v=0 > /dev/null 2>&1 || (exit 0)
+        python /opt/depthsizer_code/scripts/depthsizer.py \\
+            -seqin ${assembly} \\
+            -bam '${sorted_bam}' \\
+            -busco '${busco_full_table}' \\
+            -reads ${reads[0]},${reads[1]} \\
+            -basefile=${assembly}.depthsizer \\
+            -forks 40 \\
+            i=-1 v=0 > /dev/null 2>&1 || (exit 0)
         if [ -e *.fastmp.scdepth ] && [ -e *.gensize.tdt ] && [ -e *.depthsizer.fulltable.tsv ] && [ -e *.depthsizer.busco.dupcnv.tsv ]; then
             rm -rf tmpdir
             exit 0  
@@ -385,8 +501,9 @@ workflow {
     //__________________________________________________________________________________
 
         // Run process
-        bwa_align_acti(lineage.out)
-        bwa_align_vert(lineage.out)
+        BWAMEM2_INDEX(lineage.out)
+        BWAMEM2_MEM_ACTI(BWAMEM2_INDEX.out.index)
+        BWAMEM2_MEM_VERT(BWAMEM2_INDEX.out.index)
 
     //__________________________________________________________________________________
     // Merqury workflow
@@ -415,7 +532,7 @@ workflow {
         merged_busco_output_ch = busco_acti.out.busco_tsv.mix(busco_vert.out.busco_tsv)
         
         // Merge the outputs of bwa alighn vert and acti into a single channel
-        merged_bwa_aligm_output_ch = bwa_align_acti.out.sorted_bam.mix(bwa_align_vert.out.sorted_bam)
+        merged_bwa_aligm_output_ch = BWAMEM2_MEM_ACTI.out.sorted_bam.mix(BWAMEM2_MEM_VERT.out.sorted_bam)
 
         // Check channel outputs
         merged_busco_output_ch.subscribe { item -> println "busco merged: $item"}

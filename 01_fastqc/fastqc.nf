@@ -69,22 +69,26 @@ params.scriptPath = "${baseDir}/bin/fastp-json2tsv.R"
     //_________________________________________________________________________________________________________
 
     process fastqc {
-        tag "fastqc on $og_num"
+        tag "$og_num fastqc"
         publishDir "$params.projectDir/${og_num}/fastp/fastqc" , mode:'copy'
 
         input:
             tuple val(og_num), val(sample_id), path(reads)
 
         output:
-            path "fastqc_${sample_id}_logs"
+            path "fastqc_${sample_id}_logs", emit: logs
+            path  "versions_fastqc.yml"
 
         script:
             """
             mkdir fastqc_${sample_id}_logs
-            fastqc ${reads[0]} ${reads[1]} -o fastqc_${sample_id}_logs
+            fastqc \\
+                ${reads[0]} \\
+                ${reads[1]} \\
+                -o fastqc_${sample_id}_logs
 
             
-            cat <<-END_VERSIONS > versions.yml
+            cat <<-END_VERSIONS > versions_fastqc.yml
             "${task.process}":
                 fastqc: \$( fastqc --version | sed '/FastQC v/!d; s/.*v//' )
             END_VERSIONS
@@ -97,7 +101,7 @@ params.scriptPath = "${baseDir}/bin/fastp-json2tsv.R"
     //_________________________________________________________________________________________________________
     
     process fastp {
-        tag "fastp on $og_num"
+        tag "$og_num fastp"
         publishDir "$params.projectDir/${og_num}/fastp", mode: 'copy'
     
         input:
@@ -109,26 +113,47 @@ params.scriptPath = "${baseDir}/bin/fastp-json2tsv.R"
             path("${new_sample_id}.R2.fastq.gz")
             tuple val(og_num), path("${sample_id}.fastp.json"),  emit: fastp_json
             path("${new_sample_id}.fastp.html")
+            path "versions_fastp.yml"   
     
         script:
             """
-            fastp --in1 ${reads[0]} --out1 ${new_sample_id}.R1.fastq.gz --in2 ${reads[1]} --out2 ${new_sample_id}.R2.fastq.gz --verbose --max_len1 150 --max_len2 150 --length_required 100 --json '${sample_id}.fastp.json' --html '${new_sample_id}.fastp.html' --report_title="${new_sample_id} fastp" --thread 16 2>&1 | tee ${new_sample_id}.fastp.log
+            fastp \\
+                --dedup \\
+                --cut_tail \\
+                --in1 ${reads[0]} \\
+                --out1 ${new_sample_id}.R1.fastq.gz \\
+                --in2 ${reads[1]} \\
+                --out2 ${new_sample_id}.R2.fastq.gz \\
+                --verbose \\
+                --max_len1 300 \\
+                --max_len2 300 \\
+                --length_required 100 \\
+                --json '${sample_id}.fastp.json' \\
+                --html '${new_sample_id}.fastp.html' \\
+                --report_title="${new_sample_id} fastp" \\
+                --thread 8 \\
+                2>&1 | tee ${new_sample_id}.fastp.log
 
+            cat <<-END_VERSIONS > versions_fastp.yml
+            "${task.process}":
+                fastp: \$(fastp --version 2>&1 | sed -e "s/fastp //g")
+            END_VERSIONS
             """
     }
 
     //_________________________________________________________________________________________________________
     // Compile
     //_________________________________________________________________________________________________________
+    
     process compile {
-        tag "compile on $og_num"
+        tag "$og_num compile "
         publishDir "$params.projectDir/${og_num}/fastp", mode: 'copy'
 
         input: 
-            tuple val(og_num), file (sample_id)
+            tuple val(og_num), file(sample_id)
 
         output:
-            file ("${sample_id}.tsv") 
+            file("${sample_id}.tsv") 
 
         script:
             """
@@ -143,7 +168,7 @@ params.scriptPath = "${baseDir}/bin/fastp-json2tsv.R"
     // Multiqc
     //_________________________________________________________________________________________________________
     process multiqc {
-        tag "multiqc on $og_num"
+        tag "multiqc"
         publishDir "$params.multiqc", mode:'copy'
 
         input:
@@ -174,8 +199,8 @@ workflow {
         }
         
 
-
-   fastqc_ch = fastqc(read_pairs_ch)
+    fastqc(read_pairs_ch)
+    fastqc_ch = fastqc.out.logs
 
        fastp_input_ch = read_pairs_ch.map { og_num, sample_id, reads ->
         def name = sample_id.tokenize(".")

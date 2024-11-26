@@ -22,7 +22,7 @@ while IFS= read -r OGID; do
   SIZES_LOCAL=$(echo $(rclone size $pooled/$OGID | sed 's/Total/|-- Local/g'))
   
   # Format and append the results to the TSV
-  echo $OGID $SIZES_LOCAL | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /,/g' | tee -a $TSV
+  echo $OGID $SIZES_LOCAL | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /\t/g' | tee -a $TSV
 done < "$OGLIST_FILE"
 
 

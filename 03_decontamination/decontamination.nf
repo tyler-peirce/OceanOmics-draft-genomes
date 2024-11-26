@@ -85,7 +85,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
         output: 
             tuple val(og_num), val(sample_id), path(assembly), path("NCBI/*.fcs_gx_report.txt")     , emit: fcs_gx_report
             tuple val(og_num), val(sample_id), path("NCBI/*.taxonomy.rpt")                          , emit: taxonomy_report
-            path "NCBI/versions.yml"                                                                , emit: versions
+            path "NCBI/versions_fcsgxfind.yml"                                                                , emit: versions
     
         when:
             task.ext.when == null || task.ext.when   
@@ -116,7 +116,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
                 --debug               
                 
         
-            cat <<-END_VERSIONS > NCBI/versions.yml
+            cat <<-END_VERSIONS > NCBI/versions_fcsgxfind.yml
             "${task.process}":
                 python: \$(python3 --version 2>&1 | sed -e "s/Python //g")
                 FCS-GX: \$( gx --help | sed '/build/!d; s/.*:v//; s/-.*//' )
@@ -142,6 +142,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
         output:
             tuple val(og_num), path("NCBI/${sample_id}.v129mh.rc.fasta"), emit: cleaned
             path("NCBI/${og_num}.contam.fasta")                         , emit: contam
+            path "NCBI/versions_fcsgxclean.yml" 
 
         script:
 
@@ -164,30 +165,12 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
                 --contam-fasta-out "NCBI/${og_num}.contam.fasta"
                 $args
         
-            cat <<-END_VERSIONS > versions.yml
+            cat <<-END_VERSIONS > NCBI/versions_fcsgxclean.yml
             "${task.process}":
                 FCS-GX: $FCSGX_VERSION
             END_VERSIONS
             """
-        
-            stub:
-            // Exit if running this module with -profile conda / -profile mamba
-            if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-                error "FCS_FCSGX module does not support Conda. Please use Docker / Singularity / Podman instead."
-            }
-            def prefix = task.ext.prefix ?: "${sample_id}"
-            def FCSGX_VERSION = '0.5.4'
-        
-            """
-            mkdir -p NCBI
-            touch NCBI/${sample_id}.v129mh.rc.fasta
-            touch NCBI/${og_num}.contam.fasta
-        
-            cat <<-END_VERSIONS > versions.yml
-            "${task.process}":
-                FCS-GX: \$( gx --help | sed '/build/!d; s/.*:v//; s/-.*//' )
-            END_VERSIONS
-            """
+
     }
 
 
@@ -207,6 +190,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             path ("NCBI/${sample_id}.filter_report.txt")                        , emit: filter_report
             tuple path("NCBI/${sample_id}.review_scaffolds_1kb.txt"), path("NCBI/${sample_id}.contig_count_500bp.txt"), path("NCBI/${sample_id}.v129mh.rf.fa")
             tuple val(og_num), val(sample_id), file("${sample_id}.v129mh.fa")   , emit: filtered_fasta
+            path "NCBI/versions_bbmapfilter.yml" 
             
         script:
             """ 
@@ -254,6 +238,11 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
                 in="NCBI/${sample_id}.v129mh.rf.fa" \\
                 out="${sample_id}.v129mh.fa" \\
                 minlength=500
+
+            cat <<-END_VERSIONS > NCBI/versions_bbmapfilter.yml
+            "${task.process}":
+                bbmap: \$(bbversion.sh | grep -v "Duplicate cpuset")
+            END_VERSIONS
           
             """
     }
@@ -278,6 +267,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             tuple val(og_num), path("adaptor/*.fcs_adaptor.log")        , emit: log
             tuple val(og_num), path("adaptor/*.pipeline_args.yaml")     , emit: pipeline_args
             tuple val(og_num), path("adaptor/*.skipped_trims.jsonl")    , emit: skipped_trims
+            path "versions_fcsadaptor.yml" 
 
         script:
             def args = task.ext.args ?: '--euk' // --prok || --euk
@@ -297,7 +287,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
                 mv "adaptor/pipeline_args.yaml"        "adaptor/${prefix}.pipeline_args.yaml"
                 mv "adaptor/skipped_trims.jsonl"       "adaptor/${prefix}.skipped_trims.jsonl"
             
-            cat <<-END_VERSIONS > versions.yml
+            cat <<-END_VERSIONS > versions_fcsadaptor.yml
             "${task.process}":
                 FCS-adaptor: $FCSADAPTOR_VERSION
             END_VERSIONS
@@ -322,6 +312,8 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
         output:
             tuple val(og_num), val(sample_id), path("${sample_id}.rmadapt.fasta")   , emit: cleaned
             path("${sample_id}.adaptor-contam.fasta")                               , emit: contam
+            path "versions_fcsgxfilter.yml" 
+            
 
         script:
             def args = task.ext.args ?: ''
@@ -338,7 +330,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
                 --contam-fasta-out "${sample_id}.adaptor-contam.fasta"
                 
         
-            cat <<-END_VERSIONS > versions.yml
+            cat <<-END_VERSIONS > versions_fcsgxfilter.yml
             "${task.process}":
                 FCS-GX: $FCSGX_VERSION
             END_VERSIONS
@@ -363,7 +355,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             tuple val(og_num), path("${sample_id}.tiara.txt"), path("${sample_id}.tiara_filter_summary.txt"), emit: classifications
             tuple val(og_num), path("log_*.{txt,txt.gz}")   , emit: log
             tuple val(og_num), path("*.{fasta,fasta.gz}")   , emit: fasta, optional: true
-            path "versions.yml"                             , emit: versions
+            path "versions_tiara.yml"                             , emit: versions
 
 
         script:
@@ -373,7 +365,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             """
             tiara -i ${fasta} \\
                 -o ${sample_id}.tiara.txt \\
-                --threads 4 \\
+                --threads 12 \\
                 ${args}
          
             #Compile the results of tiara, this script will generate a summary txt file which will show across each category the number of contigs and number of bp to be filtered. 
@@ -398,7 +390,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
             grep -w plastid "\$tiara_report" | awk '{print \$1}' >> "\$contig_list"
             grep -w prokarya "\$tiara_report" | awk '{print \$1}' >> "\$contig_list"
 
-            cat <<-END_VERSIONS > versions.yml
+            cat <<-END_VERSIONS > versions_tiara.yml
             "${task.process}":
                 tiara: ${VERSION}
             END_VERSIONS
@@ -421,6 +413,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
 
         output:
             path("${sample_id}.v129mh.fna")
+            path "versions_bbmapfiltertiara.yml"
 
         script:
                 
@@ -430,6 +423,11 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
                 out="${sample_id}.v129mh.fna" \\
                 names="${contig_list}" \\
                 exclude
+
+            cat <<-END_VERSIONS > versions_bbmapfiltertiara.yml
+            "${task.process}":
+                bbmap: \$(bbversion.sh | grep -v "Duplicate cpuset")
+            END_VERSIONS
             """
     }
 

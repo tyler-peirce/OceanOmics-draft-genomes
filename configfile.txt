@@ -4,8 +4,8 @@ module load python/3.11.6
 
 # Update these variables for the run that you are processing
 
-RUN=NOVA_240813_AMD
-DATE=240813
+RUN=NEXT_241101_AD
+DATE=241101
 WRKDIR=/scratch/pawsey0812/tpeirce/DRAFTGENOME
 
 # Update the location of where you would like your output, or leave as is.

@@ -80,6 +80,7 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
         output: 
             tuple val(og_num), val(sample_id), path ("${sample_id}.meryl.hist"), emit: hist
             tuple val(og_num), val(sample_id), path("${sample_id}.meryl")
+            path "versions_meryl.yml" 
 
         script:
             
@@ -89,6 +90,10 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
             meryl union-sum output '${sample_id}.meryl' '${reads[0].baseName}.meryl' '${reads[1].baseName}.meryl'
             meryl histogram '${sample_id}.meryl' > '${sample_id}.meryl.hist'
             
+            cat <<-END_VERSIONS > versions_meryl.yml
+            "${task.process}":
+                meryl: \$( meryl --version |& sed 's/meryl //' )
+            END_VERSIONS
             """
     }
     //_________________________________________________________________________________________________________
@@ -104,13 +109,24 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
             tuple val(og_num), val(sample_id), path ("${sample_id}.meryl.hist")
            
         output:
-            path "${sample_id}"
+            path "${sample_id}" 
+            path "versions_genomescope.yml"           
 
         script:
 
             """ 
-            genomescope.R -i '${sample_id}.meryl.hist' -k 21 -o '${sample_id}' -n '${sample_id}-genomescope'  -m 1000
+            genomescope.R \\
+                -i '${sample_id}.meryl.hist' \\
+                -k 21 \\
+                -o '${sample_id}' \\
+                -n '${sample_id}-genomescope' \\
+                -m 1000
 
+            cat <<-END_VERSIONS > versions_genomescope.yml
+            '${task.process}':
+                genomescope: \$( genomescope -v | sed 's/GenomeScope //' )
+                r: \$( R --version | sed '1!d; s/.*version //; s/ .*//' )
+            END_VERSIONS
             """
     }
 
@@ -128,16 +144,29 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
 
         output:
             tuple val(sample_id), path("${sample_id}.v129mh.fasta.gz")
+            path "versions_megahit.yml"   
 
         script:
         
             """
-            megahit -1 ${reads[0]} -2 ${reads[1]} -m 200000000000 -t 24 -o ./mh${sample_id} --continue
+            megahit \\
+                -1 ${reads[0]} \\
+                -2 ${reads[1]} \\
+                -m 200000000000 \\
+                -t 100 \\
+                -o ./mh${sample_id} \\
+                --continue
+
             mv ./mh${sample_id}/final.contigs.fa ${sample_id}.v129mh.fasta
             
             #Zip the fasta so that fcs-gx works
             gzip ${sample_id}.v129mh.fasta
+
             
+            cat <<-END_VERSIONS > versions_megahit.yml
+            "${task.process}":
+                megahit: \$(echo \$(megahit -v 2>&1) | sed 's/MEGAHIT v//')
+            END_VERSIONS
             """
     }
 
