@@ -51,7 +51,7 @@ def config = readConfigFile(configFile)
 params.date = config['DATE']
 params.projectDir = config['rundir'] //this is the OUTPUT dir
 params.wrkdir = config['WRKDIR']
-params.results ="$params.wrkdir/${params.date}_results"
+params.results =config['results']
 
 // Define the pattern to match sample directories
 samplePattern = params.projectDir + "/OG*"
@@ -77,7 +77,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     //_________________________________________________________________________________________________________
 
     process lineage {
-        tag "lineage on $ognum"
+        tag "$ognum lineage"
         input:
         tuple val(ognum), path(reads), path(assembly)
 
@@ -102,7 +102,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     //_________________________________________________________________________________________________________
 
     process busco_acti {
-        tag "busco_acti on $ognum"
+        tag "$ognum busco_acti"
         //debug true
         publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/busco_acti", mode: 'copy'
 
@@ -150,6 +150,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     }
 
     process compile_busco_acti {
+        tag "$ognum compile_busco_acti"
         publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/busco_acti", mode: 'copy'
 
         input: 
@@ -169,7 +170,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     //_________________________________________________________________________________________________________
 
     process busco_vert {
-        tag "busco_vert on $ognum"
+        tag "$ognum busco_vert"
         //debug true
         publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/busco_vert", mode: 'copy'
 
@@ -216,6 +217,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     }
 
     process compile_busco_vert {
+        tag "$ognum compile_busco_vert"
         publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/busco_vert", mode: 'copy'
 
         input: 
@@ -236,14 +238,14 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     //_________________________________________________________________________________________________________
 
         process BWAMEM2_INDEX {
-            tag "BWAMEM2_INDEX on $ognum"
+            tag "$ognum BWAMEM2_INDEX"
 
             input:
                 tuple val(ognum), path(reads), path(assembly), val(lineage)
 
             output:
                 tuple val(ognum), path("bwamem2"), path(reads), path(assembly), val(lineage), emit: index
-                path "versionsbwa_index.yml"             , emit: versions
+                path "versions_bwaindex.yml"             , emit: versions
 
             when:
                 task.ext.when == null || task.ext.when
@@ -272,7 +274,8 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     //_________________________________________________________________________________________________________
 
         process BWAMEM2_MEM_ACTI {
-            tag "BWAMEM2_MEM on $ognum"
+            tag "$ognum BWAMEM2_MEM"
+            publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/bwa", mode: 'copy'
 
             input:
                 tuple val(ognum), path(index), path(reads), path(assembly), val(lineage)
@@ -323,7 +326,8 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     //_________________________________________________________________________________________________________
         
         process BWAMEM2_MEM_VERT {
-            tag "BWAMEM2_MEM on $ognum"
+            tag "$ognum BWAMEM2_MEM"
+            publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/bwa", mode: 'copy'
 
             input:
                 tuple val(ognum), path(index), path(reads), path(assembly), val(lineage)
@@ -375,7 +379,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     //_________________________________________________________________________________________________________
 
     process merqury {
-        tag "merqury on $ognum"
+        tag "$ognum merqury"
         publishDir "$params.projectDir/${assembly.simpleName}/kmers", mode: 'copy'
 
         input:
@@ -417,7 +421,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
     //_________________________________________________________________________________________________________
 
     process depthsizer {
-        tag "depthsizer on $ognum"
+        tag "$ognum depthsizer"
         publishDir "$params.projectDir/${assembly.simpleName}/assemblies/genome/depthsizer", mode: 'copy'
 
         input:

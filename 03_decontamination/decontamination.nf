@@ -52,7 +52,7 @@ params.date = config['DATE']
 params.wrkdir = config['WRKDIR']
 params.RUN = config['RUN']
 params.pooled = config['pooled']
-params.results ="$params.wrkdir/${params.date}_results"
+params.results =config['results']
 params.projectDir = config['rundir']
 
 
@@ -75,7 +75,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
 
 
     process fcsgx_find {
-        tag "fcsgx_find on $og_num"
+        tag "$ognum fcsgx_find"
 
         publishDir "${params.projectDir}/${og_num}/assemblies/genome", mode:'copy'
 
@@ -131,7 +131,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
 
     process fcsgx_clean { 
         debug true
-        tag "fcsgx_clean on $og_num"
+        tag "$ognum fcsgx_clean"
 
         publishDir "${params.projectDir}/${og_num}/assemblies/genome", mode:'copy'
           
@@ -179,7 +179,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
     //_________________________________________________________________________________________________________
 
     process bbmap_filter { 
-        tag "bbmap_filter on $og_num"
+        tag "$ognum bbmap_filter"
 
         publishDir "${params.projectDir}/${og_num}/assemblies/genome", mode:'copy'
 
@@ -253,7 +253,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
     //_________________________________________________________________________________________________________
 
     process find_adaptors {
-        tag "find_adaptors on $og_num"
+        tag "$ognum find_adaptors"
 
         publishDir "${params.projectDir}/${og_num}/assemblies/genome/NCBI", mode:'copy'
 
@@ -302,7 +302,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
 
     process filter_adaptors {
         //debug true
-        tag "filter_adaptors on $og_num"
+        tag "$ognum filter_adaptors"
 
         publishDir "${params.projectDir}/${og_num}/assemblies/genome", mode:'copy'
           
@@ -343,7 +343,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
     //_________________________________________________________________________________________________________
 
     process tiara_find_contam {
-        tag "tiara_find_contam on $og_num"
+        tag "$ognum tiara_find_contam"
 
         publishDir "${params.projectDir}/${og_num}/assemblies/genome/tiara", mode:'copy'
 
@@ -404,7 +404,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
     //_________________________________________________________________________________________________________
 
     process filter_tiara {
-        tag "filter_tiara on $og_num"
+        tag "$ognum filter_tiara"
 
         publishDir "${params.projectDir}/${og_num}/assemblies/genome", mode:'copy'
 

@@ -70,7 +70,7 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
     //_________________________________________________________________________________________________________
     
     process meryl {
-        tag "meryl on $sample_id"
+        tag "$sample_id meryl"
         
         publishDir "$params.projectDir/${og_num}/kmers", mode:'copy'
 
@@ -101,7 +101,7 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
     //_________________________________________________________________________________________________________
 
     process genomescope { 
-        tag "genomescope on $sample_id"
+        tag "$sample_id genomescope"
 
         publishDir "$params.projectDir/${og_num}/kmers", mode:'copy'
 
@@ -131,11 +131,11 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
     }
 
     //_________________________________________________________________________________________________________
-    // Filter tiara resulults using bbmap
+    // Megahit
     //_________________________________________________________________________________________________________
 
     process megahit {
-        tag "megahit on $sample_id"
+        tag "$sample_id megahit"
 
         publishDir "$params.projectDir/${og_num}/assemblies/genome", mode:'copy'
 

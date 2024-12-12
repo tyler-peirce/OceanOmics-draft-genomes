@@ -146,7 +146,7 @@ params.scriptPath = "${baseDir}/bin/fastp-json2tsv.R"
     //_________________________________________________________________________________________________________
     
     process compile {
-        tag "$og_num compile "
+        tag "$og_num compile"
         publishDir "$params.projectDir/${og_num}/fastp", mode: 'copy'
 
         input: 
