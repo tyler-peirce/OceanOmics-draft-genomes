@@ -9,7 +9,7 @@ mkdir -p $results
 #Filter report 
 ####
 
-txt=$results/"$DATE"_tirara_filter_report.tsv
+txt=$results/"$DATE"_tiara_filter_report.tsv
 echo -e "Sample\tCategory\tnum_contigs\tbp" > $txt
 
 
