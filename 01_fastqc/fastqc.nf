@@ -81,7 +81,7 @@ params.scriptPath = "${baseDir}/bin/fastp-json2tsv.R"
 
         script:
             """
-            mkdir fastqc_${sample_id}_logs
+            mkdir -p fastqc_${sample_id}_logs
             fastqc \\
                 ${reads[0]} \\
                 ${reads[1]} \\
