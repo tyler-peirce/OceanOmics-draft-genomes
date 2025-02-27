@@ -12,10 +12,10 @@ OGLIST_FILE=$results/OGLIST_RAW.txt
 ls $download > $OGLIST_FILE
 
 # Set the TSV file name  
-TSV=$results/draftRAWcheck-local.$DATE.TSV
+TSV_L=$results/draftRAWcheck-local.$DATE.TSV
 
 # Print the TSV header
-echo -e "OGID\tLocNum\tLocSize\tLocBytes" | tee -a $TSV
+echo -e "OGID\tLocNum\tLocSize\tLocBytes" | tee -a $TSV_L
 
 # Loop through each OGID in the OGLIST file
 while IFS= read -r OGID; do
@@ -23,17 +23,17 @@ while IFS= read -r OGID; do
   SIZES_LOCAL=$(echo $(rclone size $download/$OGID | sed 's/Total/|-- Local/g'))
   
   # Format and append the results to the TSV
-  echo $OGID $SIZES_LOCAL | sed -E 's/(\(|\))//g' | awk '{OFS="\t"; print $1,$6,$10 $11,$12}' | sed 's/ /\t/g' | tee -a $TSV
+  echo $OGID $SIZES_LOCAL | sed -E 's/(\(|\))//g' | awk '{OFS="\t"; print $1,$6,$10 $11,$12}' | sed 's/ /\t/g' | tee -a $TSV_L
 done < "$OGLIST_FILE"
 
 
 ## 2. Perform check on aws
 
 # Set the TSV file name  
-TSV=$results/draftRAWcheck-AWS.$DATE.TSV
+TSV_A=$results/draftRAWcheck-AWS.$DATE.TSV
 
 # Print the TSV header
-echo -e "OGID\tAwsNum\tAwsSize\tAwsBytes" | tee -a $TSV
+echo -e "OGID\tAwsNum\tAwsSize\tAwsBytes" | tee -a $TSV_A
 
 # Loop through each OGID in the OGLIST file
 while IFS= read -r OGID; do
@@ -41,7 +41,8 @@ while IFS= read -r OGID; do
   SIZES_AWS=$(echo $(rclone size s3:oceanomics/OceanGenomes/illumina-raw/$RUN/$OGID | sed 's/Total/|-- AWS/g'))
   
   # Format and append the results to the TSV
-  echo $OGID $SIZES_AWS | sed -E 's/(\(|\))//g' | awk '{OFS="\t"; print $1,$6,$10 $11,$12}' | sed 's/ /\t/g' | tee -a $TSV
+  echo $OGID $SIZES_AWS | sed -E 's/(\(|\))//g' | awk '{OFS="\t"; print $1,$6,$10 $11,$12}' | sed 's/ /\t/g' | tee -a $TSV_A
 done < "$OGLIST_FILE"
 
-join -t '\t' $results/draftRAWcheck-local.$DATE.TSV $results/draftRAWcheck-AWS.$DATE.TSV > $results/draftRAWcheck-join.$DATE.TSV
+# join the two for comparison
+paste -d '\t' $TSV_L $TSV_A > $results/draftRAWcheck-join.$DATE.TSV
