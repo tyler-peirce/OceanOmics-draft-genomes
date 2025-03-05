@@ -165,7 +165,7 @@ try:
         print(f"Column names in DataFrame: {draft_genomes_fastp.columns.tolist()}")
         print("Values:", values)
 
-        cursor.execute(upsert_query, values)
+        cursor.execute(upsert_query, params)
         row_count += 1  
 
         conn.commit()
