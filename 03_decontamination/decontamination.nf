@@ -105,7 +105,7 @@ params.singularity="/software/projects/pawsey0812/tpeirce/.nextflow_singularity/
                 cp -v ${params.GXDB_LOC}/gxdb/all.taxa.tsv /tmp/gxdb/ 
             echo ‘done copying’ 
             ls -l /tmp/gxdb/
-           
+            DATE=${params.date}
             taxid=\$(cat "${params.results}/taxon.txt" | grep -w ${og_num} | awk -F'\\t' '{print \$4}')
             echo "taxid: \$taxid"
             python3 /app/bin/run_gx \\
