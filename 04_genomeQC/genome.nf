@@ -87,6 +87,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
 
         script:
         """
+        DATE=${params.date}
         lineage=\$(grep -w "${ognum}" ${params.results}/taxon.txt | awk -F '\\t' '{print \$2}')
         echo "\$lineage" > lineage.txt
         
@@ -254,7 +255,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
                 def prefix = task.ext.prefix ?: "${assembly}"
                 def args = task.ext.args ?: ''
                 """
-                mkdir bwamem2
+                mkdir -p bwamem2
                 bwa-mem2 \\
                     index \\
                     $args \\
@@ -485,18 +486,18 @@ workflow {
     // Lineage workflow
     //__________________________________________________________________________________
     
-        // Lineage process to determine if vert or acti
-        lineage(join_ch)
-    
+    // Run lineage process and create a channel
+        lineage_ch = lineage(join_ch) // Run the process
+            
     //__________________________________________________________________________________
     // BUSCO workflow
     //__________________________________________________________________________________
     
-        // activates the busco processes, these process have a when statement and will only run when the final_lineage_ch is equal to the right database to be run.
-        busco_acti(lineage.out)
+        // activates the busco processes, these process have a when statement and will only run when the lineage_ch is equal to the right database to be run.
+        busco_acti(lineage_ch)
         compile_busco_acti(busco_acti.out.summary_json)
 
-        busco_vert(lineage.out)
+        busco_vert(lineage_ch)
         compile_busco_vert(busco_vert.out.summary_json)
 
         
@@ -505,7 +506,7 @@ workflow {
     //__________________________________________________________________________________
 
         // Run process
-        BWAMEM2_INDEX(lineage.out)
+        BWAMEM2_INDEX(lineage_ch)
         BWAMEM2_MEM_ACTI(BWAMEM2_INDEX.out.index)
         BWAMEM2_MEM_VERT(BWAMEM2_INDEX.out.index)
 

@@ -10,7 +10,7 @@ mkdir -p $results
 ####
 
 txt=$results/"$DATE"_tiara_filter_report.tsv
-echo -e "Sample\tCategory\tnum_contigs\tbp" > $txt
+echo -e "sample\tcategory\tnum_contigs\tbp" > $txt
 
 
 for contig in $rundir/OG*/assemblies/genome/tiara/*.$DATE.tiara_filter_summary.txt; do

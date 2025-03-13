@@ -10,7 +10,7 @@ mkdir -p $results
 ####
 
 txt=$results/"$DATE"_NCBI_filter_report.tsv
-echo -e "Sample\tCategory\tnum_contigs\tbp" > $txt
+echo -e "sample\tcategory\tnum_contigs\tbp" > $txt
 
 for contig in $rundir/OG*/assemblies/genome/NCBI/*.$DATE.filter_report.txt; do
     PREFIX=$(basename $contig | awk -F ".filter_report." '{print $1;}')
@@ -28,7 +28,7 @@ column -t $txt
 ####
 
 txt=$results/"$DATE"_NCBI_contig_count_500bp.tsv
-echo Sample,num_contigs | sed 's/,/\t/g' | tee $txt
+echo sample,num_contigs | sed 's/,/\t/g' | tee $txt
 
 for contig in $rundir/OG*/assemblies/genome/NCBI/*.$DATE.contig_count_500bp.txt; do
 
