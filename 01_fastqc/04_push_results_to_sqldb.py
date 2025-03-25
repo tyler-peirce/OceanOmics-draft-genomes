@@ -89,7 +89,7 @@ try:
     row_count = 0  # Track number of processed rows
 
     for index, row in draft_genomes_fastp.iterrows():
-        values = tuple(row.values)
+        row_dict = row.to_dict()
 
         # Extract primary key values
         og_id, seq_date = row["og_id"], row["seq_date"]
@@ -101,7 +101,11 @@ try:
             raw_total_reads, raw_total_bases, raw_q20_bases, raw_q30_bases, raw_q20_rate, raw_q30_rate, raw_read1_mean_length, raw_read2_mean_length,
             raw_gc_content, total_reads, total_bases, q20_bases, q30_bases, q20_rate, q30_rate, read1_mean_length, read2_mean_length, gc_content, mach, seq_date, initial
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (
+            %(og_id)s, %(passed_filter_reads)s, %(low_quality_reads)s, %(too_many_n_reads)s, %(too_short_reads)s, %(too_long_reads)s,
+            %(raw_total_reads)s, %(raw_total_bases)s, %(raw_q20_bases)s, %(raw_q30_bases)s, %(raw_q20_rate)s, %(raw_q30_rate)s, %(raw_read1_mean_length)s, %(raw_read2_mean_length)s,
+            %(raw_gc_content)s, %(total_reads)s, %(total_bases)s, %(q20_bases)s, %(q30_bases)s, %(q20_rate)s, %(q30_rate)s, %(read1_mean_length)s, %(read2_mean_length)s, %(gc_content)s, %(mach)s, %(seq_date)s, %(initial)s
+        )
         ON CONFLICT (og_id, seq_date) DO UPDATE SET
             mach = EXCLUDED.mach,
             initial = EXCLUDED.initial,
@@ -129,41 +133,41 @@ try:
             read2_mean_length = EXCLUDED.read2_mean_length,
             gc_content = EXCLUDED.gc_content;
         """
-        params = (
-            row["og_id"],  # TEXT / VARCHAR
-            str(row["mach"]) if row["mach"] else None,  # TEXT (Ensure it's a string)
-            str(row["seq_date"]) if row["seq_date"] else None,  # TEXT or DATE
-            str(row["initial"]) if row["initial"] else None,  # TEXT       
-            int(row["passed_filter_reads"]) if row["passed_filter_reads"] else 0,  # INTEGER
-            int(row["low_quality_reads"]) if row["low_quality_reads"] else 0,  # INTEGER
-            int(row["too_many_n_reads"]) if row["too_many_n_reads"] else 0,  # INTEGER
-            int(row["too_short_reads"]) if row["too_short_reads"] else 0,  # INTEGER
-            int(row["too_long_reads"]) if row["too_long_reads"] else 0,  # INTEGER        
-            int(row["raw_total_reads"]) if row["raw_total_reads"] else 0,  # INTEGER
-            int(row["raw_total_bases"]) if row["raw_total_bases"] else 0,  # BIGINT
-            int(row["raw_q20_bases"]) if row["raw_q20_bases"] else 0,  # BIGINT
-            int(row["raw_q30_bases"]) if row["raw_q30_bases"] else 0,  # BIGINT        
-            float(row["raw_q20_rate"]) if row["raw_q20_rate"] else 0.0,  # FLOAT
-            float(row["raw_q30_rate"]) if row["raw_q30_rate"] else 0.0,  # FLOAT        
-            int(row["raw_read1_mean_length"]) if row["raw_read1_mean_length"] else 0,  # INTEGER
-            int(row["raw_read2_mean_length"]) if row["raw_read2_mean_length"] else 0,  # INTEGER        
-            float(row["raw_gc_content"]) if row["raw_gc_content"] else 0.0,  # FLOAT        
-            int(row["total_reads"]) if row["total_reads"] else 0,  # INTEGER
-            int(row["total_bases"]) if row["total_bases"] else 0,  # BIGINT
-            int(row["q20_bases"]) if row["q20_bases"] else 0,  # BIGINT
-            int(row["q30_bases"]) if row["q30_bases"] else 0,  # BIGINT       
-            float(row["q20_rate"]) if row["q20_rate"] else 0.0,  # FLOAT
-            float(row["q30_rate"]) if row["q30_rate"] else 0.0,  # FLOAT        
-            int(row["read1_mean_length"]) if row["read1_mean_length"] else 0,  # INTEGER
-            int(row["read2_mean_length"]) if row["read2_mean_length"] else 0,  # INTEGER        
-            float(row["gc_content"]) if row["gc_content"] else 0.0,  # FLOAT
-        )
+        params = {
+            "og_id": row_dict["og_id"],  # TEXT / VARCHAR
+            "mach": str(row_dict["mach"]) if row_dict["mach"] else None,  # TEXT (Ensure it's a string)
+            "seq_date": str(row_dict["seq_date"]) if row_dict["seq_date"] else None,  # TEXT or DATE
+            "initial": str(row_dict["initial"]) if row_dict["initial"] else None,  # TEXT       
+            "passed_filter_reads": int(row_dict["passed_filter_reads"]) if row_dict["passed_filter_reads"] else 0,  # INTEGER
+            "low_quality_reads": int(row_dict["low_quality_reads"]) if row_dict["low_quality_reads"] else 0,  # INTEGER
+            "too_many_n_reads": int(row_dict["too_many_n_reads"]) if row_dict["too_many_n_reads"] else 0,  # INTEGER
+            "too_short_reads": int(row_dict["too_short_reads"]) if row_dict["too_short_reads"] else 0,  # INTEGER
+            "too_long_reads": int(row_dict["too_long_reads"]) if row_dict["too_long_reads"] else 0,  # INTEGER        
+            "raw_total_reads": int(row_dict["raw_total_reads"]) if row_dict["raw_total_reads"] else 0,  # INTEGER
+            "raw_total_bases": int(row_dict["raw_total_bases"]) if row_dict["raw_total_bases"] else 0,  # BIGINT
+            "raw_q20_bases": int(row_dict["raw_q20_bases"]) if row_dict["raw_q20_bases"] else 0,  # BIGINT
+            "raw_q30_bases": int(row_dict["raw_q30_bases"]) if row_dict["raw_q30_bases"] else 0,  # BIGINT        
+            "raw_q20_rate": float(row_dict["raw_q20_rate"]) if row_dict["raw_q20_rate"] else 0.0,  # FLOAT
+            "raw_q30_rate": float(row_dict["raw_q30_rate"]) if row_dict["raw_q30_rate"] else 0.0,  # FLOAT        
+            "raw_read1_mean_length": int(row_dict["raw_read1_mean_length"]) if row_dict["raw_read1_mean_length"] else 0,  # INTEGER
+            "raw_read2_mean_length": int(row_dict["raw_read2_mean_length"]) if row_dict["raw_read2_mean_length"] else 0,  # INTEGER        
+            "raw_gc_content": float(row_dict["raw_gc_content"]) if row_dict["raw_gc_content"] else 0.0,  # FLOAT        
+            "total_reads": int(row_dict["total_reads"]) if row_dict["total_reads"] else 0,  # INTEGER
+            "total_bases": int(row_dict["total_bases"]) if row_dict["total_bases"] else 0,  # BIGINT
+            "q20_bases": int(row_dict["q20_bases"]) if row_dict["q20_bases"] else 0,  # BIGINT
+            "q30_bases": int(row_dict["q30_bases"]) if row_dict["q30_bases"] else 0,  # BIGINT       
+            "q20_rate": float(row_dict["q20_rate"]) if row_dict["q20_rate"] else 0.0,  # FLOAT
+            "q30_rate": float(row_dict["q30_rate"]) if row_dict["q30_rate"] else 0.0,  # FLOAT        
+            "read1_mean_length": int(row_dict["read1_mean_length"]) if row_dict["read1_mean_length"] else 0,  # INTEGER
+            "read2_mean_length": int(row_dict["read2_mean_length"]) if row_dict["read2_mean_length"] else 0,  # INTEGER        
+            "gc_content": float(row_dict["gc_content"]) if row_dict["gc_content"] else 0.0,  # FLOAT
+        }
 
         # Debugging Check
         print(f"Number of columns in query: {upsert_query.count('%s')}")
-        print(f"Number of values being passed: {len(values)}")
         print(f"Column names in DataFrame: {draft_genomes_fastp.columns.tolist()}")
-        print("Values:", values)
+        print("row:", row_dict)
+        print("params:", params)
 
         cursor.execute(upsert_query, params)
         row_count += 1  
