@@ -1,5 +1,5 @@
 #!/bin/bash --login
-#SBATCH --account=pawsey0812
+#SBATCH --account=pawsey0964
 #SBATCH --job-name=fastqc-backup
 #SBATCH --partition=copy
 #SBATCH --ntasks=1
@@ -14,4 +14,4 @@
 
 . ../configfile.txt
 
-rclone copy $rundir/ pawsey0812:oceanomics-fastq/ --checksum #--progress
+rclone copy $rundir/ pawsey0964:oceanomics-fastq/ --checksum #--progress
