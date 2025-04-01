@@ -9,7 +9,7 @@ mkdir -p $results
 cd $rundir
 
 output_file=$results/"${DATE}_BUSCO_compiled_results.tsv"
-echo -e "sample\tComplete\tSingle_copy\tMulti_copy\tFragmented\tMissing\tn_markers\tdomain\tNumber_of_scaffolds\tNumber_of_contigs\tTotal_length\tPercent_gaps\tScaffold_N50\tContigs_N50" > $output_file
+echo -e "sample\tcomplete\tsingle_copy\tmulti_copy\tfragmented\tmissing\tn_markers\tdomain\tnumber_of_scaffolds\tnumber_of_contigs\ttotal_length\tpercent_gaps\tscaffold_n50\tcontigs_n50" > $output_file
 
 
 
