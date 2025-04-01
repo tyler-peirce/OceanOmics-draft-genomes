@@ -8,7 +8,7 @@ mkdir -p $results
 ### COMPILE completeness stats 
 
 output_file=$results/"$DATE"_merqury.completeness.stats.tsv
-echo -e "sample\tk-mer_set\tsolid_k-mers\ttotal_k-mers\tcompleteness" > $output_file
+echo -e "sample\tk_mer_set\tsolid_k-mers\ttotal_k_mers\tcompleteness" > $output_file
 #find all .merqury.completeness.stats files 
 completeness_files=$(find $rundir/. -name "*.merqury.completeness.stats")
 
@@ -23,7 +23,7 @@ for i in $completeness_files; do
 ### COMPILE QV STATS 
 
 output_file=$results/"$DATE"_merqury.qv.stats.tsv
-echo -e "sample\tunique_k-mers_assembly\tk-mers_total\tqv\terror" > $output_file
+echo -e "sample\tunique_k_mers_assembly\tk_mers_total\tqv\terror" > $output_file
 #find all .merqury.completeness.stats files 
         completeness_files=$(find $rundir/. -name "*.merqury.qv")
         
