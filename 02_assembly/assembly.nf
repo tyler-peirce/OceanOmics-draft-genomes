@@ -86,12 +86,12 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
             
             """
             # Definie the number of threads for meryl
-            export OMP_NUM_THREADS=128
+            export OMP_NUM_THREADS=110
             
-            meryl k=21 count output '${reads[0].baseName}.meryl' ${reads[0]}
-            meryl k=21 count output '${reads[1].baseName}.meryl' ${reads[1]}
-            meryl union-sum output '${sample_id}.meryl' '${reads[0].baseName}.meryl' '${reads[1].baseName}.meryl'
-            meryl histogram '${sample_id}.meryl' > '${sample_id}.meryl.hist'
+            meryl k=21 count memory=230 output '${reads[0].baseName}.meryl' ${reads[0]}
+            meryl k=21 count memory=230 output '${reads[1].baseName}.meryl' ${reads[1]}
+            meryl union-sum memory=230 output '${sample_id}.meryl' '${reads[0].baseName}.meryl' '${reads[1].baseName}.meryl'
+            meryl histogram memory=230 '${sample_id}.meryl' > '${sample_id}.meryl.hist'
             
             cat <<-END_VERSIONS > versions_meryl.yml
             "${task.process}":
