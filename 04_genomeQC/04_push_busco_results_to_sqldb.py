@@ -1,13 +1,14 @@
 import psycopg2
 import pandas as pd
 import numpy as np  # Required for handling infinity values
+# Run using singularity run $SING/psycopg2:0.1.sif python
 
 # PostgreSQL connection parameters
 db_params = {
     'dbname': 'oceanomics',
     'user': 'postgres',
     'password': 'oceanomics',
-    'host': '115.146.85.41',
+    'host': '203.101.227.69',
     'port': 5432
 }
 
@@ -119,7 +120,7 @@ try:
             "number_of_scaffolds": int(row_dict["number_of_scaffolds"]) if row_dict["number_of_scaffolds"] else None,  # INTEGER        
             "number_of_contigs": int(row_dict["number_of_contigs"]) if row_dict["number_of_contigs"] else None,  # INTEGER
             "total_length": int(row_dict["total_length"]) if row_dict["total_length"] else None,  # BIGINT        
-            "percent_gaps": float(row_dict["percent_gaps"].rstrip('%')) if row_dict["percent_gaps"] not in [None, ""] else None,       
+            "percent_gaps": float(str(row_dict["percent_gaps"]).rstrip('%')) if row_dict["percent_gaps"] not in [None, ""] else None,       
             "scaffold_n50": float(row_dict["scaffold_n50"]) if row_dict["scaffold_n50"] else None,  # FLOAT        
             "contigs_n50": int(row_dict["contigs_n50"]) if row_dict["contigs_n50"] else None,  # INTEGER
         }

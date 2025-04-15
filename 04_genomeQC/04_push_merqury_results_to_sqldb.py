@@ -1,13 +1,14 @@
 import psycopg2
 import pandas as pd
 import numpy as np  # Required for handling infinity values
+# Run using singularity run $SING/psycopg2:0.1.sif python
 
 # PostgreSQL connection parameters
 db_params = {
     'dbname': 'oceanomics',
     'user': 'postgres',
     'password': 'oceanomics',
-    'host': '115.146.85.41',
+    'host': '203.101.227.69',
     'port': 5432
 }
 
