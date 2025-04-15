@@ -85,6 +85,9 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
         script:
             
             """
+            # Definie the number of threads for meryl
+            export OMP_NUM_THREADS=128
+            
             meryl k=21 count output '${reads[0].baseName}.meryl' ${reads[0]}
             meryl k=21 count output '${reads[1].baseName}.meryl' ${reads[1]}
             meryl union-sum output '${sample_id}.meryl' '${reads[0].baseName}.meryl' '${reads[1].baseName}.meryl'
@@ -153,7 +156,7 @@ params.reads="$params.projectDir/OG*/fastp/*.{R1,R2}.fastq.gz"
                 -1 ${reads[0]} \\
                 -2 ${reads[1]} \\
                 -m 200000000000 \\
-                -t 100 \\
+                -t 128 \\
                 -o ./mh${sample_id} \\
                 --continue
 
