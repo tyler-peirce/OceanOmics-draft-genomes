@@ -403,7 +403,7 @@ params.lineage_vert_db = "/scratch/references/busco_db/vertebrata_odb10"
                 set -u
             fi
             # limit meryl to use the assigned number of cores.
-            export OMP_NUM_THREADS=1536
+            export OMP_NUM_THREADS=100
 
             merqury.sh \\
                 ${meryldb} \\
