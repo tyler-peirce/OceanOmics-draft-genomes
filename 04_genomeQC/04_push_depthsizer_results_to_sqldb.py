@@ -1,7 +1,8 @@
 import psycopg2
 import pandas as pd
 import numpy as np  # Required for handling infinity values
-# Run using singularity run $SING/psycopg2:0.1.sif python
+
+# run using: singularity run $SING/psycopg2:0.1.sif python 04_push_depthsizer_results_to_sqldb.py
 
 # PostgreSQL connection parameters
 db_params = {
