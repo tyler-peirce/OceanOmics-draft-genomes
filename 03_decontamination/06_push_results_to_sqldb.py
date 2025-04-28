@@ -9,7 +9,7 @@ db_params = {
     'dbname': 'oceanomics',
     'user': 'postgres',
     'password': 'oceanomics',
-    'host': '115.146.85.41',
+    'host': '203.101.227.69',
     'port': 5432
 }
 
@@ -50,6 +50,9 @@ tiara_df = pd.read_csv(tiara_filter_report, sep="\t")
 def transform_data(tiara_df):
     # Pivot the data to get the desired format
     tiara_df_pivot = tiara_df.pivot(index="sample", columns="category", values=["num_contigs", "bp"])
+
+    # Fill missing values with 0 to prevent NaN
+    tiara_df_pivot = tiara_df_pivot.fillna(0)
     
     # Flatten the column names
     tiara_df_pivot.columns = [f"{col[0]}_{col[1].lower()}" for col in tiara_df_pivot.columns]
@@ -111,12 +114,12 @@ try:
         params = {
             "og_id": row_dict["og_id"],
             "seq_date": row_dict["seq_date"],
-            "num_contigs_mitochondrion": row_dict["num_contigs_mitochondrion"],
-            "num_contigs_plastid": row_dict["num_contigs_plastid"],
-            "num_contigs_prokarya": row_dict["num_contigs_prokarya"],
-            "bp_mitochondrion": row_dict["bp_mitochondrion"] if row_dict["bp_mitochondrion"] else None,
-            "bp_plastid": row_dict["bp_plastid"],
-            "bp_prokarya": row_dict["bp_prokarya"],
+            "num_contigs_mitochondrion": row_dict["num_contigs_mitochondrion"] if row_dict["num_contigs_mitochondrion"] is not None else None,
+            "num_contigs_plastid": row_dict["num_contigs_plastid"] if row_dict["num_contigs_plastid"] is not None else None,
+            "num_contigs_prokarya": row_dict["num_contigs_prokarya"] if row_dict["num_contigs_prokarya"] is not None else None,
+            "bp_mitochondrion": row_dict["bp_mitochondrion"] if row_dict["bp_mitochondrion"] is not None else None,
+            "bp_plastid": row_dict["bp_plastid"] if row_dict["bp_plastid"] is not None else None,
+            "bp_prokarya": row_dict["bp_prokarya"] if row_dict["bp_prokarya"] is not None else None,
         }
 
         # Debugging Check
