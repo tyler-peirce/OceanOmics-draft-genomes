@@ -38,7 +38,7 @@ echo -e "OGID\tAwsNum\tacaciaSize\tacaciaBytes" > $TSV_A
 # Loop through each OGID in the OGLIST file
 while IFS= read -r OGID; do
   # Get the sizes from rclone from AWS
-  SIZES_ACACIA=$(echo $(rclone size pawsey0812:oceanomics-fastq/$OGID | sed 's/Total/|-- acacia/g'))
+  SIZES_ACACIA=$(echo $(rclone size pawsey0964:oceanomics-filtered-reads/$OGID | sed 's/Total/|-- acacia/g'))
   
   # Format and append the results to the TSV
   echo $OGID $SIZES_ACACIA | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /\t/g' >> $TSV_A

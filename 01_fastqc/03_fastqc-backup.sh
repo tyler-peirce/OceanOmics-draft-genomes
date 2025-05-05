@@ -14,4 +14,4 @@
 
 . ../configfile.txt
 
-rclone copy $rundir/ pawsey0964:oceanomics-fastq/ --checksum #--progress
+rclone copy $rundir/ pawsey0964:oceanomics-filtered-reads/ --checksum #--progress
