@@ -8,7 +8,7 @@ mkdir -p $results
 
 # Define the output file and create the column headings
 TSV=$results/"$DATE"_fastp_compiled_results.tsv
-echo Sample,run,passed_filter_reads,low_quality_reads,too_many_N_reads,too_short_reads,too_long_reads,raw.total_reads,raw.total_bases,raw.q20_bases,raw.q30_bases,raw.q20_rate,raw.q30_rate,raw.read1_mean_length,raw.read2_mean_length,raw.gc_content,total_reads,total_bases,q20_bases,q30_bases,q20_rate,q30_rate,read1_mean_length,read2_mean_length,gc_content | sed 's/,/\t/g' | tee $TSV
+echo sample,run,passed_filter_reads,low_quality_reads,too_many_n_reads,too_short_reads,too_long_reads,raw.total_reads,raw.total_bases,raw.q20_bases,raw.q30_bases,raw.q20_rate,raw.q30_rate,raw.read1_mean_length,raw.read2_mean_length,raw.gc_content,total_reads,total_bases,q20_bases,q30_bases,q20_rate,q30_rate,read1_mean_length,read2_mean_length,gc_content | sed 's/,/\t/g' | tee $TSV
 
 
 # Append the data rows from each .tsv file to the output file

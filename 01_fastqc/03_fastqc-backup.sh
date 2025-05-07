@@ -14,4 +14,12 @@
 
 . ../configfile.txt
 
-rclone copy $rundir/ pawsey0964:oceanomics-filtered-reads/ --checksum #--progress
+SOURCE="$rundir"
+DEST="pawsey0964:oceanomics-filtered-reads"
+
+for d in "$SOURCE"/OG*/fastp/; do
+    [ -d "$d" ] || continue  # skip if no match
+    relpath="${d#$SOURCE/}"  # e.g. OG001/fastp
+    echo "Copying $d to $DEST/$relpath"
+    rclone copy "$d" "$DEST/$relpath" --progress
+done
