@@ -35,8 +35,8 @@ for i in  "$rundir"/*; do
 
         wait
         
-        #rm -rf $MERYL_DIR
+        rm -rf $MERYL_DIR
     fi
 done
 
-#rclone move $rundir pawsey0964:oceanomics-draftgenomes/genomes.v2/  --checksum -P
+rclone move $rundir pawsey0964:oceanomics-draftgenomes/genomes.v2/  --checksum -P

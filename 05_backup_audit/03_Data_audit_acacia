@@ -19,7 +19,7 @@ OGLIST_FILE=$results/OGLIST.txt
 # Loop through each OGID in the OGLIST file
 while IFS= read -r OGID; do
   # Get the sizes from rclone for each location
-  SIZES=$(echo $(rclone size pawsey0812:oceanomics-genomes/genomes.v2/$OGID | sed 's/Total/|-- Acacia/g'))
+  SIZES=$(echo $(rclone size pawsey0964:oceanomics-draftgenomes/genomes.v2/$OGID | sed 's/Total/|-- Acacia/g'))
   
   # Format and append the results to the TSV
   echo $OGID $SIZES | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /\t/g' | tee -a $TSV
