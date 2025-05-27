@@ -37,7 +37,7 @@ echo -e "OGID\tLocNum\tLocSize\tLocBytes" | tee -a $TSV_A
 # Loop through each OGID in the OGLIST file
 while IFS= read -r OGID; do
   # Get the sizes from rclone from AWS
-  SIZES_AWS=$(echo $(rclone size s3:oceanomics/OceanGenomes/illumina-wgs/$RUN/$OGID | sed 's/Total/|-- AWS/g'))
+  SIZES_AWS=$(echo $(rclone size s3:oceanomics/OceanGenomes/illumina-sra/$OGID | sed 's/Total/|-- AWS/g'))
   
   # Format and append the results to the TSV
   echo $OGID $SIZES_AWS | sed -E 's/(\(|\))//g' | awk '{print $1,$6,$10 $11,$12;}' | sed 's/ /\t/g' | tee -a $TSV_A

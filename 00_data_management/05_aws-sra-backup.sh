@@ -9,6 +9,6 @@
 #SBATCH --export=NONE
 
 #-----------------
-. ../configfile.txt
-
-rclone copy $pooled s3:oceanomics/OceanGenomes/illumina-wgs/$RUN --checksum
+#. ../configfile.txt
+pooled=/scratch/pawsey0964/tpeirce/_DRAFTGENOMES/pooled
+rclone copy $pooled s3:oceanomics/OceanGenomes/illumina-sra/ --checksum
