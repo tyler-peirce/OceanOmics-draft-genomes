@@ -8,7 +8,7 @@ mkdir -p $results
 ### COMPILE completeness stats 
 
 output_file=$results/"$DATE"_merqury.completeness.stats.tsv
-echo -e "sample\tk_mer_set\tsolid_k-mers\ttotal_k_mers\tcompleteness" > $output_file
+echo -e "sample\tk_mer_set\tsolid_k_mers\ttotal_k_mers\tcompleteness" > $output_file
 #find all .merqury.completeness.stats files 
 completeness_files=$(find $rundir/. -name "*.merqury.completeness.stats")
 
