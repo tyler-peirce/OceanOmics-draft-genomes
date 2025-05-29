@@ -14,7 +14,7 @@ DATE=$(echo "$RUN" | cut -d'_' -f2)
 # Dynamically extract Pawsey account from current working directory
 PAWSEY_ACCOUNT=$(pwd | grep -o '/scratch/pawsey[0-9]\+' | cut -d/ -f3)
 
-WRKDIR=/scratch/$PAWSEY_ACCOUNT/$USER/_DRAFTGENOME
+WRKDIR=/scratch/$PAWSEY_ACCOUNT/$USER/_DRAFTGENOMES
 
 # Update the location of where you would like your output, or leave as is.
 rundir=$WRKDIR/OUTPUT_$RUN
