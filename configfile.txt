@@ -2,11 +2,19 @@
 . ~/.bashrc
 module load python/3.11.6
 
-# Update these variables for the run that you are processing
+# Update the variable RUN for the run that you are processing. All other variables are set dynamically
+# Make sure you add the run date to the end of your cloned repository
+# eg. $WRKDIR/OceanOmics-draft-genomes$DATE
 
-RUN=NEXT_241101_AD
-DATE=241101
-WRKDIR=/scratch/pawsey0812/tpeirce/DRAFTGENOME
+RUN=NOVA_250514_AD
+
+# Dynamically extract date from RUN
+DATE=$(echo "$RUN" | cut -d'_' -f2
+
+# Dynamically extract Pawsey account from current working directory
+PAWSEY_ACCOUNT=$(pwd | grep -o '/scratch/pawsey[0-9]\+' | cut -d/ -f3)
+
+WRKDIR=/scratch/$PAWSEY_ACCOUNT/$USER/_DRAFTGENOME
 
 # Update the location of where you would like your output, or leave as is.
 rundir=$WRKDIR/OUTPUT_$RUN
@@ -21,15 +29,3 @@ results=$WRKDIR/${DATE}_results
 AWS=$WRKDIR/AWS_backup
 download=$WRKDIR/download/$RUN
 pooled=$WRKDIR/pooled/$RUN
-
-
-#Add this function to your bashrc
-## This function changes the date to the date of copy to ensure you have 21 days on scratch
-function rclone() {
-    if [ "$1" == "copy" ]; then
-        shift
-        command rclone copy --local-no-set-modtime "$@"
-    else
-        command rclone "$@"
-    fi
-}
