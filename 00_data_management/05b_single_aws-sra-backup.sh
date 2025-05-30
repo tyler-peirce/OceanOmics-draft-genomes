@@ -1,7 +1,8 @@
 #!/bin/bash
 ## This code is an alternative and will submit jobs to the copy que for each file to make the copying quicker.
-# Define your pooled directory if not already exported
-pooled="/scratch/pawsey0964/tpeirce/_DRAFTGENOMES/pooled"  # Replace this if $pooled is not already defined
+. ../configfile.txt
+# Define your pooled directory if not already exported in configfile
+#pooled="/scratch/pawsey0964/tpeirce/_DRAFTGENOMES/pooled"  # Replace this if $pooled is not already defined
 s3bucket="s3:oceanomics/OceanGenomes/illumina-sra/"
 
 # Create a jobs directory
