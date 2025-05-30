@@ -6,26 +6,26 @@ module load python/3.11.6
 # Make sure you add the run date to the end of your cloned repository
 # eg. $WRKDIR/OceanOmics-draft-genomes$DATE
 
-RUN=NOVA_250514_AD
+export RUN=NOVA_250514_AD
 
 # Dynamically extract date from RUN
-DATE=$(echo "$RUN" | cut -d'_' -f2)
+export DATE=$(echo "$RUN" | cut -d'_' -f2)
 
 # Dynamically extract Pawsey account from current working directory
-PAWSEY_ACCOUNT=$(pwd | grep -o '/scratch/pawsey[0-9]\+' | cut -d/ -f3)
+export PAWSEY_ACCOUNT=$(pwd | grep -o '/scratch/pawsey[0-9]\+' | cut -d/ -f3)
 
-WRKDIR=/scratch/$PAWSEY_ACCOUNT/$USER/_DRAFTGENOMES
+export WRKDIR=/scratch/$PAWSEY_ACCOUNT/$USER/_DRAFTGENOMES
 
 # Update the location of where you would like your output, or leave as is.
-rundir=$WRKDIR/OUTPUT_$RUN
+export rundir=$WRKDIR/OUTPUT_$RUN
 
 # Update to the location of your Git clone, or make sure it is in your WRKDIR
-scripts=$WRKDIR/OceanOmics-draft-genomes$DATE
+export scripts=$WRKDIR/OceanOmics-draft-genomes$DATE
 
 
 # Leave these variables as is as the scripts use these locations based on the above variables.
 
-results=$WRKDIR/${DATE}_results
-AWS=$WRKDIR/AWS_backup
-download=$WRKDIR/download/$RUN
-pooled=$WRKDIR/pooled/$RUN
+export results=$WRKDIR/${DATE}_results
+export AWS=$WRKDIR/AWS_backup
+export download=$WRKDIR/download/$RUN
+export pooled=$WRKDIR/pooled/$RUN

@@ -2,56 +2,18 @@
 nextflow.enable.dsl = 2
 
 //_________________________________________________________________________________________________________
-/* The folowing block of code reads in the config file where all the variables and directiories are defined
-    for the run. These are then passed into parameters for the nextflow pipeline. */
-//_________________________________________________________________________________________________________
-
-def readConfigFile(configFile) {
-    def config = [:]
-    new File(configFile).eachLine { line ->
-        if (!line.startsWith('#') && !line.startsWith('.') && !line.startsWith('module') && line.contains('=')) {
-            def (key, value) = line.split('=')
-            value = value.replaceAll('~', System.getProperty('user.home')) // Handle home directory shortcut
-            config[key.trim()] = value.trim()
-        }
-    }
-    
-    // Evaluate variable references
-    config.each { key, value ->
-        config[key] = evaluateExpression(value, config)
-    }
-    
-    return config
-}
-
-def evaluateExpression(value, config) {
-    // Handle variable substitution
-    def result = value
-    config.each { key, val ->
-        result = result.replace('$' + key, val)
-    }
-    return result
-}
-
-// Load the config file
-def configFile = '../configfile.txt'
-def config = readConfigFile(configFile)
-
-
-//_________________________________________________________________________________________________________
 // |||| Pipeline input parameters ||||
 //_________________________________________________________________________________________________________
 
 /* Defining all of the parameters for the nextflow.
-    Params that have '= config[]' are pulling values from the config file.
-    The word in the [''] is the variable as defined in the config file before the = 
-    To pull more params use the variable name from the configfile.txt in square brackets.
+    Params that have '= System.getenv()' are pulling values from the config file.
+    The word in the ('') is the variable as defined in the config file before the = 
 */
 
-params.date = config['DATE']
-params.projectDir = config['rundir'] //this is the OUTPUT dir
-params.wrkdir = config['WRKDIR']
-params.results =config['results']
+params.date = System.getenv('DATE')
+params.projectDir = System.getenv('rundir') //this is the OUTPUT dir
+params.wrkdir = System.getenv('WRKDIR')
+params.results = System.getenv('results')
 
 // Define the pattern to match sample directories
 samplePattern = params.projectDir + "/OG*"
