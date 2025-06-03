@@ -44,6 +44,7 @@ def extract_date(run_string):
 DATE = extract_date(RUN)
 print(f"RUN = {RUN} and DATE = {DATE}")
 #DATE = '250131'
+
 # File containing draft genome data
 fastp_compiled_path = f"../../{DATE}_results/{DATE}_fastp_compiled_results.tsv"  # if your file structure is different this might not work.
 
