@@ -35,7 +35,14 @@ with open("../configfile.txt", "r") as file:
 print("✅ Configuration Loaded:", config)
 
 # Access file paths
-DATE = config.get("DATE")
+RUN = DATE = config.get("RUN")
+
+def extract_date(run_string):
+    parts = run_string.split('_')
+    return parts[1] if len(parts) > 1 else None
+
+DATE = extract_date(RUN)
+print(f"RUN = {RUN} and DATE = {DATE}")
 
 # File containing tiara results
 tiara_filter_report = f"../../{DATE}_results/{DATE}_tiara_filter_report.tsv"  # if your file structure is different this might not work.

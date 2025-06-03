@@ -35,7 +35,14 @@ with open("../configfile.txt", "r") as file:
 print("✅ Configuration Loaded:", config)
 
 # Access file paths
-DATE = config.get("DATE")
+RUN = DATE = config.get("RUN")
+
+def extract_date(run_string):
+    parts = run_string.split('_')
+    return parts[1] if len(parts) > 1 else None
+
+DATE = extract_date(RUN)
+print(f"RUN = {RUN} and DATE = {DATE}")
 #DATE = '250131'
 
 
