@@ -14,7 +14,7 @@
 
 for SAMP in $(cat $scripts/00_data_management/$RUN.forcat.prefix.txt); do
     #Remove the trailing letter on the OG numbers
-    SAMPLE=$(echo $SAMP | sed 's/.$//')
+    SAMPLE=$(echo "$SAMP" | sed 's/[A-Z][0-9]*$//')
     
     echo "Running $SAMPLE" | tee -a $RUN.cat.log
     $scripts/00_data_management/04a_wgs-cat.sh $RUN $SAMPLE && echo
