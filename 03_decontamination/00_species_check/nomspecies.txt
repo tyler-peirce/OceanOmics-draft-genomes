@@ -20,7 +20,7 @@ OG18	Caretta caretta
 OG19	Carcharhinus plumbeus
 OG20	Galeocerdo cuvier
 OG21	Negaprion acutidens
-OG22	Mugil cephalus 
+OG22	Mugil cephalus
 OG23	Plectropomus leopardus
 OG24	Albula vulpes
 OG25	Gerres sp.
@@ -1158,3 +1158,251 @@ OG1156	Galeocerdo cuvier
 OG1157	Galeocerdo cuvier
 OG1158	Galeocerdo cuvier
 OG1159	Galeocerdo cuvier
+OG1160	Neophoca cinerea
+OG1161	Neophoca cinerea
+OG1162	Dascyllus
+OG1163	Dascyllus
+OG1164	Dascyllus
+OG1165	Dascyllus
+OG1166	Dascyllus
+OG1167	Dascyllus
+OG1168	Dascyllus
+OG1169	Dascyllus
+OG1170	Dascyllus
+OG1171	Dascyllus
+OG1172	Dascyllus
+OG1173	Dascyllus
+OG1174	Dascyllus
+OG1175	Dascyllus
+OG1176	Dascyllus
+OG1177	Dascyllus
+OG1178	Dascyllus
+OG1179	Dascyllus
+OG1180	Dascyllus
+OG1181	Dascyllus
+OG1182	Dascyllus
+OG1183	Dascyllus
+OG1184	Dascyllus
+OG1185	Dascyllus
+OG1186	Dascyllus
+OG1187	Dascyllus
+OG1188	Dascyllus
+OG1189	Dascyllus
+OG1190	Dascyllus
+OG1191	Dascyllus
+OG1192	Dascyllus
+OG1193	Dascyllus
+OG1194	Dascyllus
+OG1195	Dascyllus
+OG1196	Dascyllus
+OG1197	Dascyllus
+OG1198	Dascyllus
+OG1199	Dascyllus
+OG1200	Dascyllus
+OG1201	Dascyllus
+OG1202	Dascyllus
+OG1203	Dascyllus
+OG1204	Dascyllus
+OG1205	Dascyllus
+OG1206	Dascyllus
+OG1207	Dascyllus
+OG1208	Dascyllus
+OG1209	Dascyllus
+OG1210	Dascyllus
+OG1211	Dascyllus
+OG1212	Dascyllus
+OG1213	Dascyllus
+OG1214	Dascyllus
+OG1215	Dascyllus
+OG1216	Dascyllus
+OG1217	Dascyllus
+OG1218	Dascyllus
+OG1219	Dascyllus
+OG1220	Dascyllus
+OG1221	Dascyllus
+OG1222	Dascyllus
+OG1223	Dascyllus
+OG1224	Dascyllus
+OG1225	Dascyllus
+OG1226	Dascyllus
+OG1227	Dascyllus
+OG1228	Dascyllus
+OG1229	Dascyllus
+OG1230	Dascyllus
+OG1231	Dascyllus
+OG1232	Dascyllus
+OG1233	Dascyllus
+OG1234	Dascyllus
+OG1235	Dascyllus
+OG1236	Dascyllus
+OG1237	Dascyllus
+OG1238	Dascyllus
+OG1239	Dascyllus
+OG1240	Dascyllus
+OG1241	Dascyllus
+OG1242	Dascyllus
+OG1243	Dascyllus
+OG1244	Dascyllus
+OG1245	Dascyllus
+OG1246	Dascyllus
+OG1247	Dascyllus
+OG1248	Dascyllus
+OG1249	Dascyllus
+OG1250	Dascyllus
+OG1251	Dascyllus
+OG1252	Galeocerdo cuvier
+OG1253	Galeocerdo cuvier
+OG1254	Galeocerdo cuvier
+OG1255	Galeocerdo cuvier
+OG1256	Galeocerdo cuvier
+OG1257	Galeocerdo cuvier
+OG1258	Galeocerdo cuvier
+OG1259	Galeocerdo cuvier
+OG1260	Galeocerdo cuvier
+OG1261	Galeocerdo cuvier
+OG1262	Galeocerdo cuvier
+OG1263	Galeocerdo cuvier
+OG1264	Galeocerdo cuvier
+OG1265	Galeocerdo cuvier
+OG1266	Galeocerdo cuvier
+OG1267	Galeocerdo cuvier
+OG1268	Galeocerdo cuvier
+OG1269	Galeocerdo cuvier
+OG1270	Galeocerdo cuvier
+OG1271	Galeocerdo cuvier
+OG1272	Narcetes shonanmaruae
+OG1273	Centroscymnus coelolepis
+OG1274	Centroscymnus owstonii
+OG1275	Ruvettus pretiosus
+OG1276	Congriscus megastomus
+OG1277	Cephaloscyllium umbratile
+OG1278	Myxinidae (A species of Hagfish)
+OG1279	Sebastes matsubarae
+OG1280	Etmopterus unicolor
+OG1281	Coelorinchus japonicus
+OG1282	Lepidion inosimae
+OG1283	Spectrunculus grandis (Brown color)
+OG1284	Spectrunculus grandis (White color)
+OG1285	Coryphaenoides acrolepis
+OG1286	Lepidocybium flavobrunneum
+OG1287	Ruvettus pretiosus
+OG1288	Lepidion schmidti
+OG1289	Squalus mitsukurii
+OG1290	Simenchelys parasiticus
+OG1291	Mitsukurina owstoni
+OG1292	Dalatias licha
+OG1293	Scymnodon ichiharai
+OG1294	Spectrunculus grandis (Brown color)
+OG1295	Spectrunculus grandis (Brown color)
+OG1296	Deania hystricosa
+OG1297	Carcharhinus obscurus
+OG1298	Carcharhinus obscurus
+OG1299	Balaenoptera acutorostrata
+OG1300	Balaenoptera acutorostrata
+OG1301	Balaenoptera acutorostrata
+OG1302	Balaenoptera acutorostrata
+OG1303	Balaenoptera acutorostrata
+OG1304	Balaenoptera acutorostrata
+OG1305	Balaenoptera acutorostrata
+OG1306	Balaenoptera acutorostrata
+OG1307	Balaenoptera acutorostrata
+OG1308	Balaenoptera acutorostrata
+OG1309	gDNA +ve control
+OG1310	NA
+OG1311	NA
+OG1312	NA
+OG1313	NA
+OG1314	NA
+OG1315	NA
+OG1316	NA
+OG1317	NA
+OG1318	NA
+OG1319	NA
+OG1320	NA
+OG1321	NA
+OG1322	NA
+OG1323	Epinephelides armatus
+OG1324	Coris auricularis
+OG1325	Ophthalmolepis lineolata
+OG1326	Notolabrus parilus
+OG1327	Nebrius ferrugineus
+OG1328	Negaprion acutidens
+OG1329	Negaprion acutidens
+OG1330	Carcharhinus amblyrhynchos
+OG1331	Galeocerdo cuvier
+OG1332	Galeocerdo cuvier
+OG1333	Carcharhinus tilstoni/limbatus
+OG1334	Carcharhinus tilstoni/limbatus
+OG1335	Galeocerdo cuvier
+OG1336	Galeocerdo cuvier
+OG1337	Carcharhinus amblyrhynchos
+OG1338	Carcharhinus amblyrhynchos
+OG1339	Negaprion acutidens
+OG1340	Nebrius ferrugineus
+OG1341	Carcharhinus amblyrhynchos
+OG1342	Gnathanodon speciosus
+OG1343	Choerodon cyanodus
+OG1344	Monacanthus chinensis
+OG1345	Lethrinus lentjan
+OG1346	Selaroides leptolepis
+OG1347	Scaevius milii
+OG1348	Cheilio inermis
+OG1349	Lethrinus genivittatus
+OG1350	Epinephelus rivulatus
+OG1351	Abudefduf bengalensis
+OG1352	Scarus ghobban
+OG1353	Epinephelus malabaricus
+OG1354	Epinephelus coioides
+OG1355	Pentapodus porosus
+OG1356	Pelates octolineatus
+OG1357	Acanthopagrus morrisoni
+OG1358	Platycephalus australis
+OG1359	Terapon jarbua
+OG1360	Siganus fuscescens
+OG1361	Ostorhinchus rueppellii
+OG1362	Epinephelus bilobatus
+OG1363	Epinephelus quoyanus
+OG1364	Epinephelus fuscoguttatus
+OG1365	Psammoperca waigiensis
+OG1366	Echeneis naucrates
+OG1367	Pomatomus saltatrix
+OG1368	Arripis georgianus
+OG1369	Sillaginodes punctatus
+OG1370	Rhabdosargus sarba
+OG1371	Hyporhamphus melanochir
+OG1372	Hyperlophus vittatus
+OG1373	Sillago schomburgkii
+OG1374	Pseudorhombus jenynsii
+OG1375	Atherinomorus vaigiensis
+OG1376	Favonigobius lateralis
+OG1377	Girella zebra
+OG1378	Chrysophrys auratus
+OG1379	Pseudocaranx georgianus
+OG1380	Acanthopagrus butcheri
+OG1381	
+OG1382	
+OG1383	
+OG1384	
+OG1385	
+OG1386	
+OG1387	
+OG1388	
+OG1389	
+OG1390	
+OG1391	
+OG1392	
+OG1393	
+OG1394	
+OG1395	
+OG1396	
+OG1397	
+OG1398	
+OG1399	
+OG1400	
+OG1401	
+OG1402	
+OG1403	
+OG1404	
+OG1405	
+	
+	

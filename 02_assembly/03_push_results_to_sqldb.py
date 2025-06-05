@@ -2,7 +2,7 @@ import psycopg2
 import pandas as pd
 import numpy as np  # Required for handling infinity values
 
-# run using: singularity run $SING/psycopg2:0.1.sif python 04_push_results_to_sqldb.py
+# run using: singularity run $SING/psycopg2:0.1.sif python 03_push_results_to_sqldb.py
 
 # PostgreSQL connection parameters
 db_params = {
